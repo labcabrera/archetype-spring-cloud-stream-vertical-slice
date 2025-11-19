@@ -1,6 +1,7 @@
 package org.labcabrera.sample.archetype.casefolder.domain;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,9 @@ public class CaseFolder {
     private String id;
 
     @NotNull
+    private CaseFolderStatus status;
+
+    @NotNull
     private String name;
 
     @NotNull
@@ -37,6 +41,20 @@ public class CaseFolder {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    public static CaseFolder create(String name, String firstSurname, String lastSurname, IdCard idCard, String owner) {
+        return CaseFolder.builder()
+            .id(UUID.randomUUID().toString())
+            .status(CaseFolderStatus.PARTIALLY_CREATED)
+            .name(name)
+            .firstSurname(firstSurname)
+            .lastSurname(lastSurname)
+            .idCard(idCard)
+            .owner(owner)
+            .createdAt(LocalDateTime.now())
+            .build()
+            .normalize();
+    }
 
     public CaseFolder normalize() {
         name = name.toUpperCase();

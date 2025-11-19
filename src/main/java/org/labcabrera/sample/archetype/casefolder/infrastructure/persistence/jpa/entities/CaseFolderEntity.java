@@ -5,10 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.labcabrera.sample.archetype.casefolder.domain.CaseFolderStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
@@ -25,6 +28,10 @@ public class CaseFolderEntity {
     @Id
     @Column(name = "id", length = 36)
     private String id;
+
+    @Column(name = "status", nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
+    private CaseFolderStatus status;
 
     @Column(name = "name", nullable = false, length = 100)
     private String name;

@@ -1,8 +1,5 @@
 package org.labcabrera.sample.archetype.casefolder.application.cqrs.handlers;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 import org.labcabrera.sample.archetype.casefolder.application.cqrs.commands.CreateCaseFolderCommand;
 import org.labcabrera.sample.archetype.casefolder.application.ports.CaseFolderEventBusPort;
 import org.labcabrera.sample.archetype.casefolder.application.ports.CaseFolderRepository;
@@ -57,16 +54,11 @@ public class CreateCaseFolderCommandHandler implements CommandHandler<CreateCase
     }
 
     private CaseFolder buildCaseFolderFromCommand(CreateCaseFolderCommand command, String username) {
-        return CaseFolder.builder()
-            .id(UUID.randomUUID().toString())
-            .name(command.name())
-            .firstSurname(command.firstSurname())
-            .lastSurname(command.lastSurname())
-            .idCard(new IdCard(command.idCardNumber(), command.idCardType()))
-            .owner(username)
-            .createdAt(LocalDateTime.now())
-            .build()
-            .normalize();
+        return CaseFolder.create(
+            command.name(),
+            command.firstSurname(),
+            command.lastSurname(),
+            new IdCard(command.idCardNumber(), command.idCardType()), username);
     }
 
     private void sendNotification(CaseFolder caseFolder) {

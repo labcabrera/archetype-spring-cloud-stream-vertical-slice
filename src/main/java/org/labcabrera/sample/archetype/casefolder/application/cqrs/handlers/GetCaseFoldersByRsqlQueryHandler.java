@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class GetCaseHoldersByRsqlQueryHandler implements QueryHandler<GetCaseFoldersByRsqlQuery, Page<CaseFolder>> {
+public class GetCaseFoldersByRsqlQueryHandler implements QueryHandler<GetCaseFoldersByRsqlQuery, Page<CaseFolder>> {
 
     private final CaseFolderRepository caseFolderRepository;
     private final SecurityPort securityPort;

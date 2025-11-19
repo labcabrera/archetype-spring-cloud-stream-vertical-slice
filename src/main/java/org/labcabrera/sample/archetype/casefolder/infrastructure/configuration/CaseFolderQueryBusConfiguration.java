@@ -1,7 +1,7 @@
 package org.labcabrera.sample.archetype.casefolder.infrastructure.configuration;
 
 import org.labcabrera.sample.archetype.casefolder.application.cqrs.handlers.GetCaseFolderByIdQueryHandler;
-import org.labcabrera.sample.archetype.casefolder.application.cqrs.handlers.GetCaseHoldersByRsqlQueryHandler;
+import org.labcabrera.sample.archetype.casefolder.application.cqrs.handlers.GetCaseFoldersByRsqlQueryHandler;
 import org.labcabrera.sample.archetype.casefolder.application.cqrs.queries.GetCaseFolderByIdQuery;
 import org.labcabrera.sample.archetype.casefolder.application.cqrs.queries.GetCaseFoldersByRsqlQuery;
 import org.labcabrera.sample.archetype.shared.application.SimpleQueryBus;
@@ -16,7 +16,7 @@ public class CaseFolderQueryBusConfiguration {
 
     private final SimpleQueryBus queryBus;
     private final GetCaseFolderByIdQueryHandler idQueryHandler;
-    private final GetCaseHoldersByRsqlQueryHandler rsqlQueryHandler;
+    private final GetCaseFoldersByRsqlQueryHandler rsqlQueryHandler;
 
     @PostConstruct
     public void registerHandlers() {
