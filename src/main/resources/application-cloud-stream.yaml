@@ -1,0 +1,38 @@
+spring:
+  cloud:
+    function:
+      # Explicit default function definition to avoid ambiguity when multiple function beans exist.
+      # Use semicolon-separated list when registering multiple functions.
+      definition: processCaseFolderCreation;processInitialCaseStepCreation
+    stream:
+      bindings:
+        # input bindings
+        processCaseFolderCreation-in-0:
+          destination: sample.case-folders.creation.v1
+          group: case-folders-svc
+          contentType: application/json
+        processInitialCaseStepCreation-in-0:
+          destination: sample.case-folders.created.v1
+          group: case-folders-svc
+          contentType: application/json
+        # output bindings
+        caseFolderCreated-out-0:
+          destination: sample.case-folders.created.v1
+          contentType: application/json
+        caseFolderUpdated-out-0:
+          destination: sample.case-folders.updated.v1
+          contentType: application/json
+        caseFolderDeleted-out-0:
+          destination: sample.case-folders.deleted.v1
+          contentType: application/json
+        caseStepCreated-out-0:
+          destination: sample.case-steps.created.v1
+          contentType: application/json
+      kafka:
+        binder:
+          brokers: ${KAFKA_BROKERS:localhost:9092}
+          autoCreateTopics: true
+          minPartitionCount: 1
+        bindings:
+          processCaseFolderCreation-in-0:
+            startOffset: earliest
