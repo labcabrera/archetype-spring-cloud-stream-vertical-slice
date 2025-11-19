@@ -22,11 +22,13 @@ También incluye la configuración básica para seguridad con OAuth2 Resource Se
 
 == Estructura del proyecto
 
-En este proyecto de ejemplo tendremos dos módulos verticales principales: _casefolder_ y _casestep_, además de un módulo _shared_ para código común.
+En este proyecto de ejemplo tendremos dos módulos verticales principales: _casefolder_ (expedientes) y _casestep_ (trámites), además de un módulo _shared_ para código común.
+
+TIP: El contenido del módulo _shared_ podría extraerse a módulos externos autoconfigurables equivalentes a los starters de Spring Boot para compartir entre proyectos.
 
 El módulo _casefolder_ define la lógica de un expediente, en este ejemplo un CRUD básico y la publicación de eventos.
 
-El módulo _casestep_ define la lógica de un trámite. Un expediente podrá tener N ttrámites asociados, y este módulo consume eventos de creación de expedientes para iniciar los trámites correspondientes.
+El módulo _casestep_ define la lógica de un trámite. Un expediente podrá tener N trámites asociados, y este módulo consume eventos de creación de expedientes para iniciar los trámites correspondientes.
 
 ----
 src/
@@ -36,7 +38,6 @@ src/
  │   └── shared
 ----
 
-TIP: El contenido del módulo _shared_ podría extraerse a módulos externos autoconfigurables equivalentes a los starters de Spring Boot para compartir entre proyectos.
 
 El flujo general es:
 
@@ -67,11 +68,18 @@ Compilar:
 ./gradlew clean build
 ```
 
-Después levantaremos Kafka localmente a través de docker compose ejecutando:
+Después levantaremos los servicios locales a través de docker compose ejecutando:
 
 ----
-docker-compose -f ../docker/docker-compose.yaml -d
+docker-compose -f docker-compose/docker-compose.yaml -d
 ----
+
+Esto levantará las instancias utilizadas por la aplicación de:
+
+- Kafka
+- PostgreSQL
+- Redis
+- Keycloak
 
 Y levantaremos la aplicación a través del comando:
 

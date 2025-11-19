@@ -5,7 +5,7 @@ resources:
 patches:
   - target:
       kind: Deployment
-      name: sample-loki-api
+      name: archetype-spring-cloud-stream-vertical-slice
     patch: |-
       - op: replace
         path: /spec/replicas

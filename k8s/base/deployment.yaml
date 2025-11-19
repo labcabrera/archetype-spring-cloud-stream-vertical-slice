@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sample-loki-api
+  name: archetype-spring-cloud-stream-vertical-slice
   labels:
-    k8s-app: sample-loki-api
+    k8s-app: archetype-spring-cloud-stream-vertical-slice
 spec:
   replicas: 2
   selector:
     matchLabels:
-      k8s-app: sample-loki-api
+      k8s-app: archetype-spring-cloud-stream-vertical-slice
   template:
     metadata:
       labels:
-        k8s-app: sample-loki-api
+        k8s-app: archetype-spring-cloud-stream-vertical-slice
     spec:
       imagePullSecrets:
       - name: registrykey
       containers:
-      - name: sample-loki-api
-        image: labcabrera/sample-loki-api:latest
+      - name: archetype-spring-cloud-stream-vertical-slice
+        image: labcabrera/archetype-spring-cloud-stream-vertical-slice:latest
         env:
         - name: TZ
           value: Europe/Madrid
