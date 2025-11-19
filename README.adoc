@@ -71,10 +71,10 @@ Compilar:
 Después levantaremos los servicios locales a través de docker compose ejecutando:
 
 ----
-docker-compose -f docker-compose/docker-compose.yaml -d
+docker-compose -f docker-compose/docker-compose.yaml up -d
 ----
 
-Esto levantará las instancias utilizadas por la aplicación de:
+Esto arrancará las instancias utilizadas por la aplicación:
 
 - Kafka
 - PostgreSQL
@@ -238,18 +238,22 @@ De este modo, si el usuario no tiene el rol de administración, solo podrá ver 
 === RSQL
 
 Se ha utilizado la libreria `rsql-parser` para parsear filtros RSQL en endpoints REST. Esto permite construir queries dinámicas basadas en parámetros de consulta.
+
 Se ha añadido el operador `=re=` para búsquedas "contiene" (like %value%) en strings.
 
 === CQRS
 
 Se ha adoptado un enfoque CQRS básico en la capa de aplicación, separando comandos (modificaciones de estado) y consultas (lecturas). Cada comando tiene su propio handler que encapsula la lógica de negocio asociada.
-En lugar de utilizar una implementación compleja de bus de comandos, se ha optado por un enfoque simple basado en servicios Spring gestionados por el contenedor de IoC.
+
+Este enfoque nos permite trabajar con los manejadores como si fueran los casos de uso de la aplicación, recibiendo comandos y queries con los datos necesarios.
+
+En lugar de utilizar una implementación compleja de bus de comandos (por ejemplo Axon), se ha optado por un enfoque simple basado en servicios Spring gestionados por el contenedor de IoC.
 
 === Springdoc
 
 En este caso el enfoque REST es _code-first_, por lo que se ha utilizado anotaciones en los controladores para definir los endpoints y sus contratos.
 
-Podemos consultar la API localmente en `http://localhost:8080/swagger-ui.html`
+Podemos consultar la API localmente en `http://localhost:8082/swagger-ui.html`
 
 Las anotaciones se han definido en una interface _{controller}Definition_ que será implementada por nuestro controlador. De este modo separamos la definición del contrato de la implementación.
 
