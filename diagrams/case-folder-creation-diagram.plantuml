@@ -1,0 +1,71 @@
+@startuml Case Folder Creation Sequence Diagram
+title Case Folder Creation Sequence Diagram
+
+skinparam ParticipantBackgroundColor #005b72
+skinparam ParticipantFontColor #ffffff
+skinparam ArrowColor #000000
+
+participant "REST Client" as Client
+participant "CaseFolder Controller\n(Infrastructure)" as CaseFolderCtrl
+participant "CreateCaseFolderHandler\n(Application)" as CaseFolderHandler
+participant "CaseFolder Repository\n(Infrastructure)" as CaseFolderRepo
+participant "CaseStep Initialization Consumer\n(Infrastructure)" as ConfConsumer
+participant "CaseStep CQRS Handler\n(Application)" as ConfService
+participant "CaseStep Initialization Repository\n(Infrastructure)" as ConfRepo
+participant "Database" as DB
+participant "Kafka" as Kafka
+participant "Redis" as Redis
+
+Client -> CaseFolderCtrl: POST /case-folders
+activate CaseFolderCtrl
+
+CaseFolderCtrl -> CaseFolderHandler: handle(CQRS Command)
+activate CaseFolderHandler
+CaseFolderHandler -> CaseFolderHandler: validate()
+CaseFolderHandler -> CaseFolderHandler: readAuthenticatedUser()
+CaseFolderHandler -> CaseFolderRepo: save(CaseFolder)
+activate CaseFolderRepo
+CaseFolderRepo -> DB: INSERT case_folder
+activate DB
+DB --> CaseFolderRepo: case_folder saved
+deactivate DB
+CaseFolderRepo -> Redis: cache(case_folder)
+CaseFolderRepo --> CaseFolderHandler: CaseFolder entity
+deactivate CaseFolderRepo
+
+CaseFolderHandler -> Kafka: publish CaseFolderCreatedEvent
+activate Kafka
+Kafka --> CaseFolderHandler: ack
+deactivate Kafka
+
+CaseFolderHandler --> CaseFolderCtrl: CaseFolderResponse
+deactivate CaseFolderHandler
+CaseFolderCtrl --> Client: 201 Created
+deactivate CaseFolderCtrl
+
+Kafka -> ConfConsumer: consume CaseFolderCreatedEvent
+activate ConfConsumer
+ConfConsumer -> ConfConsumer: readUserFromHeaders()
+
+ConfConsumer -> ConfService: processCaseFolderCreated(event)
+activate ConfService
+
+ConfService -> ConfRepo: save(CaseStep)
+activate ConfRepo
+ConfRepo -> DB: INSERT case_step
+activate DB
+DB --> ConfRepo: case_step saved
+deactivate DB
+ConfRepo --> ConfService: CaseStep entity
+ConfRepo -> Redis: cache(case_step)
+deactivate ConfRepo
+ConfService -> Kafka: publish CaseStepCreatedEvent
+activate Kafka
+Kafka --> ConfService: ack
+deactivate Kafka
+
+ConfService --> ConfConsumer: processed
+deactivate ConfService
+deactivate ConfConsumer
+
+@enduml
