@@ -3,9 +3,11 @@ package org.labcabrera.sample.archetype.casefolder.infrastructure.configuration;
 import org.labcabrera.sample.archetype.casefolder.application.cqrs.commands.CreateCaseFolderCommand;
 import org.labcabrera.sample.archetype.casefolder.application.cqrs.commands.DeleteCaseFolderCommand;
 import org.labcabrera.sample.archetype.casefolder.application.cqrs.commands.UpdateCaseFolderCommand;
+import org.labcabrera.sample.archetype.casefolder.application.cqrs.commands.UpdateCaseFolderStatusCommand;
 import org.labcabrera.sample.archetype.casefolder.application.cqrs.handlers.CreateCaseFolderCommandHandler;
 import org.labcabrera.sample.archetype.casefolder.application.cqrs.handlers.DeleteCaseFolderCommandHandler;
 import org.labcabrera.sample.archetype.casefolder.application.cqrs.handlers.UpdateCaseFolderCommandHandler;
+import org.labcabrera.sample.archetype.casefolder.application.cqrs.handlers.UpdateCaseFolderStatusCommandHandler;
 import org.labcabrera.sample.archetype.shared.application.SimpleCommandBus;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,12 +22,14 @@ public class CaseFolderCommandBusConfiguration {
     private final CreateCaseFolderCommandHandler createHandler;
     private final UpdateCaseFolderCommandHandler updateHandler;
     private final DeleteCaseFolderCommandHandler deleteHandler;
+    private final UpdateCaseFolderStatusCommandHandler updateStatusHandler;
 
     @PostConstruct
     public void registerHandlers() {
         commandBus.registerHandler(CreateCaseFolderCommand.class, createHandler);
         commandBus.registerHandler(UpdateCaseFolderCommand.class, updateHandler);
         commandBus.registerHandler(DeleteCaseFolderCommand.class, deleteHandler);
+        commandBus.registerHandler(UpdateCaseFolderStatusCommand.class, updateStatusHandler);
     }
 
 }

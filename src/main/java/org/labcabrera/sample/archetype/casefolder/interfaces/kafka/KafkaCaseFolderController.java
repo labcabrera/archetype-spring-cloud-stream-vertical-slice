@@ -1,50 +1,53 @@
 package org.labcabrera.sample.archetype.casefolder.interfaces.kafka;
 
 import java.util.function.Consumer;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.messaging.Message;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.labcabrera.sample.archetype.casefolder.application.cqrs.commands.CreateCaseFolderCommand;
+import org.labcabrera.sample.archetype.casefolder.application.cqrs.commands.UpdateCaseFolderStatusCommand;
+import org.labcabrera.sample.archetype.casefolder.domain.CaseFolderStatus;
+import org.labcabrera.sample.archetype.casestep.domain.events.CaseStepCreatedEvent;
 import org.labcabrera.sample.archetype.shared.application.CommandBus;
+import org.labcabrera.sample.archetype.shared.infrastructure.messaging.kafka.AuthenticatedConsumer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @RequiredArgsConstructor
-public class KafkaCaseFolderController {
+@Slf4j
+public class KafkaCaseFolderController extends AuthenticatedConsumer {
 
     private final CommandBus commandBus;
 
     @Bean
-    public Consumer<Message<CreateCaseFolderCommand>> processCaseFolderCreation() {
-        return message -> {
-            String username = message.getHeaders().get("username", String.class);
-            String roles = message.getHeaders().get("roles", String.class);
-
-            if (username != null) {
-                List<SimpleGrantedAuthority> authorities = (roles == null || roles.isBlank())
-                    ? List.of()
-                    : Arrays.stream(roles.split(","))
-                        .map(String::trim)
-                        .filter(s -> !s.isEmpty())
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-
-                Authentication auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
-                SecurityContextHolder.getContext().setAuthentication(auth);
-            }
-
+    public Consumer<Message<CreateCaseFolderCommand>> onCaseFolderCreation() {
+        return command -> {
+            log.debug("Received case folder creation command: {}", command.getPayload().idCardNumber());
             try {
-                commandBus.dispatch(message.getPayload());
+                loadUserContext(command);
+                commandBus.dispatch(command);
+            }
+            finally {
+                SecurityContextHolder.clearContext();
+            }
+        };
+    }
+
+    @Bean
+    public Consumer<Message<CaseStepCreatedEvent>> onCaseStepCreated() {
+        return event -> {
+            log.debug("Received case step created event: {}", event.getPayload().caseFolderId());
+            try {
+                loadUserContext(event);
+                var command = new UpdateCaseFolderStatusCommand(
+                    event.getPayload().caseFolderId(),
+                    CaseFolderStatus.ACTIVE);
+                commandBus.dispatch(command);
             }
             finally {
                 SecurityContextHolder.clearContext();

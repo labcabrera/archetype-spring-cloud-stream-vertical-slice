@@ -21,6 +21,10 @@ public class CaseFolderMerger {
             current.setLastSurname(updated.getLastSurname());
             modified = true;
         }
+        if (current.getStatus() != null && !current.getStatus().equals(updated.getStatus())) {
+            current.setStatus(updated.getStatus());
+            modified = true;
+        }
         return modified;
     }
 

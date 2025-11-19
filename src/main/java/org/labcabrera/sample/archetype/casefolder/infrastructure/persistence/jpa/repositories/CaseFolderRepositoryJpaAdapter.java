@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.labcabrera.sample.archetype.casefolder.application.ports.CaseFolderRepository;
 import org.labcabrera.sample.archetype.casefolder.application.services.CaseFolderGuard;
 import org.labcabrera.sample.archetype.casefolder.domain.CaseFolder;
+import org.labcabrera.sample.archetype.casefolder.domain.CaseFolderStatus;
 import org.labcabrera.sample.archetype.casefolder.infrastructure.persistence.jpa.entities.CaseFolderEntity;
 import org.labcabrera.sample.archetype.shared.application.SecurityPort.AuthenticatedUser;
 import org.labcabrera.sample.archetype.shared.domain.exceptions.BadRequestException;
@@ -41,11 +42,6 @@ public class CaseFolderRepositoryJpaAdapter implements CaseFolderRepository {
     @Cacheable(value = "caseFolder", key = "#caseFolderId", unless = "#result == null || #result.isEmpty()")
     public Optional<CaseFolder> findById(String caseFolderId) {
         return jpaRepository.findById(caseFolderId).map(entity -> mapper.toDomain(entity));
-    }
-
-    @Override
-    public Optional<CaseFolder> findByIdCardNumber(String idCardNumber) {
-        return jpaRepository.findByIdCardNumber(idCardNumber).map(entity -> mapper.toDomain(entity));
     }
 
     @Override
@@ -101,6 +97,15 @@ public class CaseFolderRepositoryJpaAdapter implements CaseFolderRepository {
         }
         var savedEntity = jpaRepository.save(current);
         return mapper.toDomain(savedEntity);
+    }
+
+    @Override
+    @CachePut(value = "caseFolder", key = "#caseFolderId")
+    public CaseFolder updateStatus(String caseFolderId, CaseFolderStatus status) {
+        jpaRepository.updateStatus(caseFolderId, status);
+        var updatedEntity = jpaRepository.findById(caseFolderId)
+            .orElseThrow(() -> new BadRequestException("Case folder not found with id " + caseFolderId));
+        return mapper.toDomain(updatedEntity);
     }
 
     @Override

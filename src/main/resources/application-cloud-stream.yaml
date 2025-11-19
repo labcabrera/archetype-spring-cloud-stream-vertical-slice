@@ -1,21 +1,25 @@
 spring:
   cloud:
     function:
-      definition: processCaseFolderCreation;processInitialCaseStepCreation;processCaseStepsOnFolderDeletion
+      definition: onCaseFolderCreation;onCaseFolderCreated;onCaseFolderDeleted;onCaseStepCreated
     stream:
       bindings:
         # input bindings
-        processCaseFolderCreation-in-0:
+        onCaseFolderCreation-in-0:
           destination: sample.case-folders.creation.v1
           group: case-folders-svc
           contentType: application/json
-        processInitialCaseStepCreation-in-0:
+        onCaseFolderCreated-in-0:
           destination: sample.case-folders.created.v1
           group: case-folders-svc
           contentType: application/json
-        processCaseStepsOnFolderDeletion-in-0:
+        onCaseFolderDeleted-in-0:
           destination: sample.case-folders.deleted.v1
-          group: case-steps-svc
+          group: case-folders-svc
+          contentType: application/json
+        onCaseStepCreated-in-0:
+          destination: sample.case-steps.created.v1
+          group: case-folders-svc
           contentType: application/json
         # output bindings
         caseFolderCreated-out-0:

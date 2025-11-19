@@ -24,11 +24,11 @@ public class KafkaCaseStepController extends AuthenticatedConsumer {
     private final CommandBus commandBus;
 
     @Bean
-    public Consumer<Message<CaseFolderCreatedEvent>> processInitialCaseStepCreation() {
+    public Consumer<Message<CaseFolderCreatedEvent>> onCaseFolderCreated() {
         return message -> {
             log.debug("Received case folder created event: {}", message.getPayload().id());
-            loadUserContext(message);
             try {
+                loadUserContext(message);
                 var command = new CreateInitialCaseStepCommand(message.getPayload().id());
                 commandBus.dispatch(command);
             }
@@ -39,7 +39,7 @@ public class KafkaCaseStepController extends AuthenticatedConsumer {
     }
 
     @Bean
-    public Consumer<Message<CaseFolderDeletedEvent>> processCaseStepsOnFolderDeletion() {
+    public Consumer<Message<CaseFolderDeletedEvent>> onCaseFolderDeleted() {
         return message -> {
             log.debug("Received case folder created event: {}", message.getPayload().caseFolderId());
             loadUserContext(message);
