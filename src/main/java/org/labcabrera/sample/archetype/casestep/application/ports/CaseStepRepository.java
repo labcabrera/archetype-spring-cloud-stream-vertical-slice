@@ -11,6 +11,8 @@ public interface CaseStepRepository {
 
     List<CaseStep> findByCaseFolderId(String caseFolderId);
 
+    void deleteByCaseFolderId(String caseFolderId);
+
     CaseStep save(CaseStep entity);
 
 }

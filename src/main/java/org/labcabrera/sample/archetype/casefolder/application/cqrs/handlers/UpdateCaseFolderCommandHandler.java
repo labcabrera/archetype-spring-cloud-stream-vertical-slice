@@ -32,6 +32,7 @@ public class UpdateCaseFolderCommandHandler implements CommandHandler<UpdateCase
             .orElseThrow(() -> new NotFoundException("case-folder.msg.not-found", command.caseFolderId(), CaseFolder.class));
         caseFolderGuard.checkWrite(existing, user);
         merge(existing, command);
+        existing.normalize();
         var caseFolder = caseFolderRepository.update(existing);
         sendNotification(caseFolder);
         return caseFolder;

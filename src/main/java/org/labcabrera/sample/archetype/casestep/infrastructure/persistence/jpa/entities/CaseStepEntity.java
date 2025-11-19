@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.labcabrera.sample.archetype.casefolder.infrastructure.persistence.jpa.entities.CaseFolderEntity;
 import org.labcabrera.sample.archetype.casestep.domain.StepStatus;
 import org.labcabrera.sample.archetype.casestep.domain.StepType;
 
@@ -13,7 +12,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
@@ -31,8 +29,8 @@ public class CaseStepEntity {
     @Column(name = "id", length = 36)
     private String id;
 
-    @ManyToOne(optional = false)
-    private CaseFolderEntity caseFolder;
+    @Column(name = "case_folder_id", nullable = false, length = 36)
+    private String caseFolderId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "step_type", nullable = false, length = 50)

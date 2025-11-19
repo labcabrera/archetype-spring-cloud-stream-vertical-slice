@@ -13,13 +13,13 @@ spring:
     banner-mode: off
 
 server:
-  port: 8082
+  port: ${SERVER_PORT:8082}
   
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus,metrics,axon
+        include: health,info,prometheus,metrics
   endpoint:
     health:
       show-details: always

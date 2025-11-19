@@ -2,10 +2,10 @@ spring:
   cache:
     type: redis
   redis:
-    host: localhost
-    port: 6379
-    timeout: 60s
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    timeout: ${REDIS_TIMEOUT:60s}
 
 app:
   cache:
-    ttl-minutes: 10
+    ttl-minutes: ${CACHE_TTL_MINUTES:10}

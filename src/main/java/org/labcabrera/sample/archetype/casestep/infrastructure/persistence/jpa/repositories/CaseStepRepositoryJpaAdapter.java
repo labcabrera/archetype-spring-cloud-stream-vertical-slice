@@ -3,7 +3,6 @@ package org.labcabrera.sample.archetype.casestep.infrastructure.persistence.jpa.
 import java.util.List;
 import java.util.Optional;
 
-import org.labcabrera.sample.archetype.casefolder.infrastructure.persistence.jpa.repositories.CaseFolderJpaRepository;
 import org.labcabrera.sample.archetype.casestep.application.ports.CaseStepRepository;
 import org.labcabrera.sample.archetype.casestep.domain.CaseStep;
 import org.labcabrera.sample.archetype.casestep.infrastructure.persistence.jpa.mappers.CaseStepMapper;
@@ -20,13 +19,18 @@ import lombok.RequiredArgsConstructor;
 @SuppressWarnings("null")
 public class CaseStepRepositoryJpaAdapter implements CaseStepRepository {
 
-    private final CaseFolderJpaRepository caseFolderJpaRepository;
     private final CaseStepJpaRepository jpaRepository;
     private final CaseStepMapper mapper;
 
     @Override
     public Optional<CaseStep> findById(String caseStepId) {
         return jpaRepository.findById(caseStepId).map(entity -> mapper.toDomain(entity));
+    }
+
+    @Override
+    public List<CaseStep> findByCaseFolderId(String caseFolderId) {
+        var list = jpaRepository.findByCaseFolderId(caseFolderId);
+        return list.stream().map(entity -> mapper.toDomain(entity)).toList();
     }
 
     @Override
@@ -37,10 +41,6 @@ public class CaseStepRepositoryJpaAdapter implements CaseStepRepository {
                 throw new BadRequestException("case-step.msg.err.already-exists", caseStep.getId());
             }
             var entity = mapper.toEntity(caseStep);
-            if (caseStep.getCaseFolder() != null && caseStep.getCaseFolder().getId() != null) {
-                var folderRef = caseFolderJpaRepository.getReferenceById(caseStep.getCaseFolder().getId());
-                entity.setCaseFolder(folderRef);
-            }
             var savedEntity = jpaRepository.save(entity);
             return mapper.toDomain(savedEntity);
         }
@@ -50,9 +50,9 @@ public class CaseStepRepositoryJpaAdapter implements CaseStepRepository {
     }
 
     @Override
-    public List<CaseStep> findByCaseFolderId(String caseFolderId) {
-        var list = jpaRepository.findByCaseFolderId(caseFolderId);
-        return list.stream().map(entity -> mapper.toDomain(entity)).toList();
+    @Transactional
+    public void deleteByCaseFolderId(String caseFolderId) {
+        jpaRepository.deleteByCaseFolderId(caseFolderId);
     }
 
 }

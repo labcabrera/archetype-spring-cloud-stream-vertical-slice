@@ -1,7 +1,9 @@
 package org.labcabrera.sample.archetype.casestep.infrastructure.configuration;
 
 import org.labcabrera.sample.archetype.casestep.application.cqrs.commands.CreateInitialCaseStepCommand;
+import org.labcabrera.sample.archetype.casestep.application.cqrs.commands.DeleteCaseStepsByCaseFolderIdCommand;
 import org.labcabrera.sample.archetype.casestep.application.cqrs.handlers.CreateInitialCaseStepCommandHandler;
+import org.labcabrera.sample.archetype.casestep.application.cqrs.handlers.DeleteCaseStepsByCaseFolderIdCommandHandler;
 import org.labcabrera.sample.archetype.shared.application.SimpleCommandBus;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,10 +16,12 @@ public class CaseStepCommandBusConfiguration {
 
     private final SimpleCommandBus commandBus;
     private final CreateInitialCaseStepCommandHandler createHandler;
+    private final DeleteCaseStepsByCaseFolderIdCommandHandler deleteHandler;
 
     @PostConstruct
     public void registerHandlers() {
         commandBus.registerHandler(CreateInitialCaseStepCommand.class, createHandler);
+        commandBus.registerHandler(DeleteCaseStepsByCaseFolderIdCommand.class, deleteHandler);
     }
 
 }

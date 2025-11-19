@@ -46,7 +46,7 @@ public class CreateInitialCaseStepCommandHandler implements CommandHandler<Creat
     private CaseStep createInitialCaseStep(CaseFolder caseFolder) {
         CaseStep caseStep = CaseStep.builder()
             .id(UUID.randomUUID().toString())
-            .caseFolder(caseFolder)
+            .caseFolderId(caseFolder.getId())
             .stepType(StepType.INITIAL_REVIEW)
             .status(StepStatus.IN_PROGRESS)
             .assignedTo(caseFolder.getOwner())
@@ -57,7 +57,7 @@ public class CreateInitialCaseStepCommandHandler implements CommandHandler<Creat
     }
 
     private void publishCaseStepCreatedEvent(CaseStep caseStep) {
-        var event = new CaseStepCreatedEvent(caseStep.getId(), caseStep.getCaseFolder().getId());
+        var event = new CaseStepCreatedEvent(caseStep.getId(), caseStep.getCaseFolderId());
         caseStepEventBusPort.publish(event);
     }
 

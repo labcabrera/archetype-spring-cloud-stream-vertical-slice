@@ -2,8 +2,6 @@ package org.labcabrera.sample.archetype.casestep.domain;
 
 import java.time.LocalDateTime;
 
-import org.labcabrera.sample.archetype.casefolder.domain.CaseFolder;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +15,7 @@ public class CaseStep {
 
     private String id;
 
-    private CaseFolder caseFolder;
+    private String caseFolderId;
 
     private StepType stepType;
 
