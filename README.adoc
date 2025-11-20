@@ -352,6 +352,12 @@ En nuestra capa de exposición REST, podemos utilizar la anotación `@Validated`
     }
 ----
 
+=== Coreogragrafía SAGA
+
+En este prototipo se ha implementado un flujo básico de coreografía de eventos entre los módulos _casefolder_ y _casestep_ basada en estados. Cuando se crea un expediente (_casefolder_), se publica un evento `CaseFolderCreatedEvent` que es consumido por el módulo _casestep_ para iniciar los trámites asociados.
+
+Cuando se termina de crear el trámite, se publica un evento `CaseStepCreatedEvent` que es consumido por el módulo _casefolder_ para actualizar el estado del expediente.
+
 === Gestión de errores
 
 Los errores de la aplicación se manejan extendiendo de _DomainException_.
@@ -391,8 +397,30 @@ A través de la propiedad HTTP _Accept-Language_ se puede especificar el idioma 
 
 == Observabilidad
 
-- Actuator + Prometheus (micrometer) están incluidos en el proyecto. Ver endpoints en `/actuator`.
-- Logs: `logback-spring.xml` está preconfigurado; ajustar niveles desde `application.yaml` para ver binder/kafka y cloud stream en `DEBUG` si es necesario.
+En el proyecto se ha incluido soporte para métricas y monitorización utilizando Spring Boot Actuator y Micrometer con Prometheus como backend.
+
+En los servicios que queramos monitorizar podemos inyectar el registry de Micrometer y definir nuestras propias métricas personalizadas. Por ejemplo, en el servicio de creación de expedientes se ha añadido un contador para medir el número de expedientes creados:
+
+[source,java]
+----
+    private final MeterRegistry meterRegistry;
+    private Counter caseFolderCreatedCounter;
+
+    @PostConstruct
+    private void initMetrics() {
+        caseFolderCreatedCounter = Counter.builder("casefoldercreated")
+            .description("Number of case folders created")
+            .register(meterRegistry);
+    }
+----
+
+De este modo cada vez que se crea un expediente, se incrementa el contador `casefoldercreated` y el endpoint de prometheus registrará esta métrica devolviendo:
+
+----
+# HELP casefoldercreated_total Number of case folders created
+# TYPE casefoldercreated_total counter
+casefoldercreated_total 1.0
+----
 
 == Referencias
 

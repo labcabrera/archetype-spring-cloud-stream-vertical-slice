@@ -12,6 +12,9 @@ import org.labcabrera.sample.archetype.shared.application.SecurityPort;
 import org.labcabrera.sample.archetype.shared.domain.exceptions.ConstraintViolationException;
 import org.springframework.stereotype.Component;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +29,15 @@ public class CreateCaseFolderCommandHandler implements CommandHandler<CreateCase
     private final SecurityPort securityPort;
     private final Guard<CaseFolder> caseFolderGuard;
     private final Validator validator;
+    private final MeterRegistry meterRegistry;
+    private Counter caseFolderCreatedCounter;
+
+    @PostConstruct
+    private void initMetrics() {
+        caseFolderCreatedCounter = Counter.builder("casefoldercreated")
+            .description("Number of case folders created")
+            .register(meterRegistry);
+    }
 
     public CaseFolder handle(CreateCaseFolderCommand command) {
         var user = securityPort.requireCurrentUser();
@@ -35,6 +47,7 @@ public class CreateCaseFolderCommandHandler implements CommandHandler<CreateCase
         var caseFolder = buildCaseFolderFromCommand(command, user.username());
         validateCaseFolder(caseFolder);
         var created = caseFolderRepository.save(caseFolder);
+        caseFolderCreatedCounter.increment();
         sendNotification(created);
         return created;
     }

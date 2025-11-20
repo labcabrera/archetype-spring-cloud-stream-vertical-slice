@@ -3,18 +3,21 @@ package org.labcabrera.sample.archetype.casestep.interfaces.http.dto;
 import org.labcabrera.sample.archetype.casestep.domain.StepStatus;
 import org.labcabrera.sample.archetype.casestep.domain.StepType;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
+
 public record CaseStepDto(
 
-    String id,
+    @Schema(description = "Case step identifier", example = "12345", requiredMode = RequiredMode.NOT_REQUIRED) String id,
 
-    String caseFolderId,
+    @Schema(description = "Case folder identifier", example = "67890", requiredMode = RequiredMode.NOT_REQUIRED) String caseFolderId,
 
-    StepType stepType,
+    @Schema(description = "Step type", example = "INITIAL_REVIEW", requiredMode = RequiredMode.NOT_REQUIRED) StepType stepType,
 
-    StepStatus status,
+    @Schema(description = "Step status", example = "PENDING", requiredMode = RequiredMode.NOT_REQUIRED) StepStatus status,
 
-    String assignedTo,
+    @Schema(description = "Assigned to", example = "user123", requiredMode = RequiredMode.NOT_REQUIRED) String assignedTo,
 
-    String owner) {
+    @Schema(description = "Owner", example = "owner123", requiredMode = RequiredMode.NOT_REQUIRED) String owner) {
 
 }
