@@ -114,7 +114,7 @@ java -jar build/libs/*.jar
 
 === Spring Cloud Stream
 
-Se ha utilizado Spring Cloud Stream con Kafka binder para la integración basada en eventos. Los consumidores y productores están definidos como beans `@Bean` de tipo `Consumer` o `Function`.
+Se ha utilizado Spring Cloud Stream con Kafka binder para la integración basada en eventos. Los consumidores y productores están definidos como beans `@Bean` de tipo `Consumer`.
 
 Dentro de la configuración realizamos el mapeo de los bindings a destinos Kafka específicos y grupos de consumidores:
 
@@ -183,7 +183,7 @@ public class KafkaCaseFolderController {
 
 En este ejemplo los topics se consideran seguros (la publicación de los eventos es interna) de tal modo que se utilizan cabeceras de Kafka para propagar la información de seguridad del usuario autenticado a través de los mensajes. En otros escenarios podríamos utilizar el mismo esquema de seguridad basado en OAuth2 para proteger los topics a través de tokens.
 
-TIP: Usando Spring Cloud Stream evitamos que nuestro código tenga dependencias directas con la API de Kafka de modo que puede ser fácilmente adaptado a otros sistemas de mensajería compatibles con Spring Cloud Stream como por ejemplo RabbitMQ, AWS SQS, etc.
+TIP: Usando Spring Cloud Stream evitamos que nuestro código tenga dependencias directas con la API de Kafka de modo que puede ser fácilmente adaptado a otros sistemas de mensajería compatibles con Spring Cloud Stream como por ejemplo RabbitMQ, AWS SQS, etc, cambiando únicamente las dependencias y el fichero de configuración.
 
 === Seguridad
 
@@ -201,10 +201,9 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: ${IAM_JWK_URI:http://localhost:8090/realms/sample/protocol/openid-connect/certs}
-          issuer-uri: ${IAM_ISSUER_URI:http://localhost:8090/auth/realms/sample}
 ----
 
-==== Restricciones de acceso
+==== Restricciones de acceso en entidades de dominio
 
 En la capa de aplicación se ha definido la interface _Guard_ encargada de verificar las restricciones de acceso a nivel de entidad de dominio:
 
@@ -220,7 +219,7 @@ public interface Guard<T> {
 Cada entidad de dominio puede tener su propia implementación de _Guard_ que será invocada desde los servicios de aplicación para verificar si el usuario autenticado tiene permisos para realizar la operación solicitada.
 En este ejemplo, la implementación de _Guard_ para la entidad _CaseFolder_ verifica a nivel de los roles obtenidos del IAM y en los casos de no ser administrador de que el campo _owner_ coincida con el usuario autenticado. En otros escenarios podremos implementar lógicas más complejas según las necesidades de seguridad de la aplicación.
 
-==== Filtro en consultas RSQL
+==== Filtros en las consultas RSQL
 
 Dentro de la implementación del repositorio JPA para la entidad _CaseFolder_ se ha añadido un filtro de seguridad en las consultas RSQL para limitar los resultados según los permisos del usuario autenticado:
 
@@ -283,7 +282,7 @@ De este modo, si el usuario no tiene el rol de administración, solo podrá ver 
 
 === RSQL
 
-Se ha utilizado la libreria `rsql-parser` para parsear filtros RSQL en endpoints REST. Esto permite construir queries dinámicas basadas en parámetros de consulta.
+Se ha utilizado la libreria link:https://github.com/jirutka/rsql-parser[rsql-parser] para parsear filtros RSQL en endpoints REST. Esto permite construir queries dinámicas basadas en parámetros de consulta.
 
 Se ha añadido el operador `=re=` para búsquedas "contiene" (like %value%) en strings.
 
