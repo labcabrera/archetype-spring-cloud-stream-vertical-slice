@@ -15,12 +15,11 @@ image:https://img.shields.io/badge/Kafka-3.4-green.svg[Kafka 3.4,link="https://k
 
 == Introducción
 
-Este proyecto es un prototipo que muestra una aplicación Java Spring Boot diseñada siguiendo principios de Clean Architecture (hexagonal / ports & adapters) y usando Spring Cloud Stream para integración con Kafka en un enfoque "vertical slices" (cada módulo contiene sus capas: domain, application, interfaces, infrastructure).
+Este proyecto es un prototipo que muestra una aplicación Java Spring Boot diseñada siguiendo principios de Clean Architecture (hexagonal / ports & adapters) y usando Spring Cloud Stream para integración con Kafka en un enfoque "vertical slices" (cada módulo contiene sus capas: domain, application, infrastructure e interfaces).
 
-Se pretende ser un punto de partida para microservicios que publican y consumen eventos, JPA para la persistencia, CQRS para la integración de commands y queries para equipos de desarrollo que no estén familiarizados con conceptos de arquitectura de software como DDD o event sourcing y se enfoquen en la implementación de la lógica de negocio.
+Pretende ser un punto de partida para microservicios que publican y consumen eventos, usando JPA para la persistencia, CQRS para la integración de commands y queries. El prototipo está pensado para equipos de desarrollo que no estén familiarizados con conceptos de DDD o event sourcing tales como link:https://www.axoniq.io/framework[Axon] o link:https://eventuate.io/abouteventuatetram.html[Eventuate Tram] y se enfoquen en la implementación de la lógica de  negocio.
 
 El prototipo incluye también una configuración de seguridad basada en OAuth2 Resource Server. Las llamadas a la API requieren de un token previamente emitido por un proveedor de identidad que será validado por la aplicación a través de la configuración JWT del IAM.
-
 
 == Tecnologías utilizadas
 
@@ -43,6 +42,8 @@ TIP: El contenido del módulo _shared_ podría extraerse a módulos externos aut
 El módulo _casefolder_ define la lógica de un expediente, en este ejemplo un CRUD básico y la publicación de eventos.
 
 El módulo _casestep_ define la lógica de un trámite. Un expediente podrá tener N trámites asociados, y este módulo consume eventos de creación de expedientes para iniciar los trámites correspondientes.
+
+image::./images/domain-model.png[]
 
 De cara a la persistencia, se ha desnormalizado el modelo para que cada módulo tenga su propia tabla en la base de datos, evitando joins entre tablas de diferentes módulos y sirva como ejemplo de boundary contexts independientes para la orquestación basada en eventos.
 
