@@ -60,7 +60,7 @@ src/
 ----
 
 
-El flujo general es:
+El flujo de alta de expediente es el siguiente:
 
 image::./images/case-folder-creation-diagram.png[]
 
@@ -102,7 +102,9 @@ Esto arrancará las instancias utilizadas por la aplicación:
 - Redis
 - Keycloak
 
-Y levantaremos la aplicación a través del comando:
+NOTE: Asegúrate de tener Docker y Docker Compose instalados en tu máquina y haber creado la red `sample-network` previamente con `docker network create sample-network`
+
+Una vez estén levantados los servicios, podemos ejecutar la aplicación localmente usando el siguiente comando desde la raíz del proyecto:
 
 ----
 java -jar build/libs/*.jar
@@ -121,12 +123,24 @@ Dentro de la configuración realizamos el mapeo de los bindings a destinos Kafka
 spring:
   cloud:
     function:
-      definition: processCaseFolderCreation
+      definition: onCaseFolderCreation;onCaseFolderCreated;onCaseFolderDeleted;onCaseStepCreated
     stream:
       bindings:
         # input bindings
-        processCaseFolderCreation-in-0:
+        onCaseFolderCreation-in-0:
           destination: sample.case-folders.creation.v1
+          group: case-folders-svc
+          contentType: application/json
+        onCaseFolderCreated-in-0:
+          destination: sample.case-folders.created.v1
+          group: case-folders-svc
+          contentType: application/json
+        onCaseFolderDeleted-in-0:
+          destination: sample.case-folders.deleted.v1
+          group: case-folders-svc
+          contentType: application/json
+        onCaseStepCreated-in-0:
+          destination: sample.case-steps.created.v1
           group: case-folders-svc
           contentType: application/json
         # output bindings
@@ -139,6 +153,15 @@ spring:
         caseFolderDeleted-out-0:
           destination: sample.case-folders.deleted.v1
           contentType: application/json
+        caseStepCreated-out-0:
+          destination: sample.case-steps.created.v1
+          contentType: application/json
+      kafka:
+        binder:
+          brokers: ${KAFKA_BROKERS:localhost:9092}
+          autoCreateTopics: true
+          minPartitionCount: 1
+
 ----
 
 Esta configuración realiza el binding automático de los consumidores y productores a los topics Kafka correspondientes por ejemplo en nuestro controlador de Kafka:
@@ -157,6 +180,8 @@ public class KafkaCaseFolderController {
     }
 }
 ----
+
+En este ejemplo los topics se consideran seguros (la publicación de los eventos es interna) de tal modo que se utilizan cabeceras de Kafka para propagar la información de seguridad del usuario autenticado a través de los mensajes. En otros escenarios podríamos utilizar el mismo esquema de seguridad basado en OAuth2 para proteger los topics a través de tokens.
 
 TIP: Usando Spring Cloud Stream evitamos que nuestro código tenga dependencias directas con la API de Kafka de modo que puede ser fácilmente adaptado a otros sistemas de mensajería compatibles con Spring Cloud Stream como por ejemplo RabbitMQ, AWS SQS, etc.
 
