@@ -386,13 +386,7 @@ En nuestra capa de exposición REST, podemos utilizar la anotación `@Validated`
 ----
 @Override
     public ResponseEntity<CaseFolderDto> create(@RequestBody @Validated CreateCaseFolderRequest request) {
-        var command = new CreateCaseFolderCommand(
-            request.name(),
-            request.firstSurname(),
-            request.lastSurname(),
-            request.idCard().type(),
-            request.idCard().number());
-        CaseFolder caseFolder = commandBus.dispatch(command);
+        var command = buildCommand(request);
         var playerDto = mapper.toDto(caseFolder);
         return ResponseEntity.status(201).body(playerDto);
     }
