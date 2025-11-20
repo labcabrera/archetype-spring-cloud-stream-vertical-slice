@@ -295,6 +295,16 @@ Este enfoque nos permite trabajar con los manejadores como si fueran los casos d
 
 En lugar de utilizar una implementación compleja de bus de comandos (por ejemplo Axon), se ha optado por un enfoque simple basado en servicios Spring gestionados por el contenedor de IoC.
 
+Dentro del _application.cqrs_ establecemos la estructura:
+
+----
+{module}.application/
+    ├── cqrs
+    │   ├── commands: definición de comandos
+    |   |── handlers: implementación de manejadores de comandos y queries
+    │   └── queries: definición de queries
+----
+
 === Springdoc
 
 En este caso el enfoque REST es _code-first_, por lo que se ha utilizado anotaciones en los controladores para definir los endpoints y sus contratos.
