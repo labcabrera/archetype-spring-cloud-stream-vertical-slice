@@ -47,8 +47,6 @@ TIP: En un escenario real, los módulos podrían estar desplegados como microser
 
 image::./images/domain-model.png[]
 
-De cara a la persistencia, se ha desnormalizado el modelo para que cada módulo tenga su propia tabla en la base de datos, evitando joins entre tablas de diferentes módulos y sirva como ejemplo de boundary contexts independientes para la orquestación basada en eventos.
-
 La estructura de los verticales del proyecto es la siguiente:
 
 ----
