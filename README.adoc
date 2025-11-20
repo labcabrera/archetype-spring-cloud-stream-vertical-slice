@@ -179,7 +179,11 @@ public class KafkaCaseFolderController {
 }
 ----
 
+image::./images/apache-ui.png[]
+
 En este ejemplo los topics se consideran seguros (la publicación de los eventos es interna) de tal modo que se utilizan cabeceras de Kafka para propagar la información de seguridad del usuario autenticado a través de los mensajes. En otros escenarios podríamos utilizar el mismo esquema de seguridad basado en OAuth2 para proteger los topics a través de tokens.
+
+image::./images/apache-ui-headers.png[]
 
 TIP: Usando Spring Cloud Stream evitamos que nuestro código tenga dependencias directas con la API de Kafka de modo que puede ser fácilmente adaptado a otros sistemas de mensajería compatibles con Spring Cloud Stream como por ejemplo RabbitMQ, AWS SQS, etc, cambiando únicamente las dependencias y el fichero de configuración.
 
