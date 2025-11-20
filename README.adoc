@@ -41,7 +41,9 @@ TIP: El contenido del módulo _shared_ podría extraerse a módulos externos aut
 
 El módulo _casefolder_ define la lógica de un expediente, en este ejemplo un CRUD básico y la publicación de eventos.
 
-El módulo _casestep_ define la lógica de un trámite. Un expediente podrá tener N trámites asociados, y este módulo consume eventos de creación de expedientes para iniciar los trámites correspondientes.
+El módulo _casestep_ define la lógica de un trámite. Un expediente podrá tener N trámites asociados, y este módulo consume eventos de creación de expedientes para iniciar los trámites correspondientes. De cara a este ejemplo se ha desnormalizado el modelo para que cada trámite tenga una referencia al expediente al que pertenece sin utilizar joins entre tablas de diferentes módulos.
+
+TIP: En un escenario real, los módulos podrían estar desplegados como microservicios independientes comunicándose a través de eventos, cada uno correspondiendo a un boundary context diferente. Usando un enfoque de agregados podríamos hacer que el _CaseFolder_ sea el root del agregado y los _CaseStep_ entidades dependientes.
 
 image::./images/domain-model.png[]
 
