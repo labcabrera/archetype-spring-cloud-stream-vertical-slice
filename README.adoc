@@ -294,7 +294,7 @@ Este enfoque nos permite trabajar con los manejadores como si fueran los casos d
 
 En lugar de utilizar una implementación compleja de bus de comandos (por ejemplo Axon), se ha optado por un enfoque simple basado en servicios Spring gestionados por el contenedor de IoC.
 
-Dentro del _application.cqrs_ establecemos la estructura:
+Dentro del _application.cqrs_ de cada vertical establecemos la estructura:
 
 ----
 {module}.application/
@@ -362,17 +362,21 @@ En nuestros servicios podremos inyectar un validador y utilizarlo para validar l
 
 [source,java]
 ----
-public class CreateCaseFolderService {
+public class CreateCaseFolderCommandHandler implements CommandHandler<CreateCaseFolderCommand, CaseFolder> {
 
-    public CaseFolder createCaseFolder(...) {
-        var caseFolder = ...
-        Set<ConstraintViolation<CaseFolder>> violations = validator.validate(caseFolder);
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException("case-folder.msg.err.validation-error", violations);
-        }
-        return caseFolderRepository.save(caseFolder);
+
+    public CaseFolder handle(CreateCaseFolderCommand command) {
+        // ...
+        validateCaseFolder(caseFolder);
+        // ...
     }
 
+    private void validateCaseFolder(CaseFolder caseFolder) {
+        Set<ConstraintViolation<CaseFolder>> violations = validator.validate(caseFolder);
+        if (!violations.isEmpty()) {
+            throw new ValidationException("casefolder.msg.err.validation", violations);
+        }
+    }
 }
 ----
 
@@ -393,6 +397,8 @@ En nuestra capa de exposición REST, podemos utilizar la anotación `@Validated`
         return ResponseEntity.status(201).body(playerDto);
     }
 ----
+
+En caso de violaciones de las restricciones, se lanzará una excepción `ValidationException` que será manejada por el controlador de excepciones global para devolver una respuesta HTTP adecuada.
 
 === Coreogragrafía SAGA
 
