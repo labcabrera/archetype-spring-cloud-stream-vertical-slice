@@ -1,18 +1,4 @@
 services:
-  sample-mongo:
-    image: mongo:8.0
-    hostname: sample-mongo
-    container_name: sample-mongo
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
-    volumes:
-      - sample-mongo-data:/data/db
-    networks:
-      - sample-network
-
   sample-postgres:
     image: postgres:16
     hostname: sample-postgres
