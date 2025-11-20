@@ -429,9 +429,9 @@ casefoldercreated_total 1.0
 
 == Referencias
 
-- [Spring Boot](https://spring.io/projects/spring-boot)
-- [Spring Cloud Stream](https://spring.io/projects/spring-cloud-stream)
-- [Clean Architecture](https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html)
-- [Testcontainers](https://www.testcontainers.org/)
-- [MapStruct](https://mapstruct.org/)
-- [RSQL Parser](https://github.com/jirutka/rsql-parser)
+- link:https://spring.io/projects/spring-boot[Spring Boot]
+- link:https://spring.io/projects/spring-cloud-stream[Spring Cloud Stream]
+- link:https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html[Clean Architecture]
+- link:https://www.testcontainers.org/[Testcontainers]
+- link:https://mapstruct.org/[MapStruct]
+- link:https://github.com/jirutka/rsql-parser[RSQL Parser]
