@@ -7,12 +7,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import org.apache.kafka.common.requests.ApiError;
 import org.labcabrera.sample.archetype.casefolder.interfaces.http.dto.CreateCaseFolderRequest;
 import org.labcabrera.sample.archetype.casefolder.interfaces.http.dto.CaseFolderDto;
 import org.labcabrera.sample.archetype.casefolder.interfaces.http.dto.CaseFolderPageResponse;
 import org.labcabrera.sample.archetype.casefolder.interfaces.http.dto.UpdateCaseFolderRequest;
-import org.labcabrera.sample.archetype.shared.interfaces.http.PageResponse;
+import org.labcabrera.sample.archetype.shared.interfaces.http.ApiError;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@RequestMapping("/api/v1/case-folders")
+@RequestMapping(value = "/api/v1/case-folders", produces = "application/json")
 @Tag(name = "Case Folders", description = "API for case folder management")
 public interface CaseFolderControllerDefinition {
 
@@ -38,8 +37,8 @@ public interface CaseFolderControllerDefinition {
 
     @GetMapping
     @Operation(summary = "Get case folders by RSQL", description = "Filter case folders using an RSQL expression with optional pagination")
-    @ApiResponse(responseCode = "200", description = "Paged case folders", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CaseFolderPageResponse.class)))
-    @ApiResponse(responseCode = "400", description = "Invalid RSQL expression", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
+    @ApiResponse(responseCode = "200", description = "Paged case folders", content = @Content(schema = @Schema(implementation = CaseFolderPageResponse.class)))
+    @ApiResponse(responseCode = "400", description = "Invalid RSQL expression", content = @Content(schema = @Schema(implementation = ApiError.class)))
     ResponseEntity<CaseFolderPageResponse> getCaseFoldersByRsql(
         @Parameter(description = "RSQL expression to filter case folders", name = "q", required = false) @RequestParam(required = false, name = "q") String rsql,
         @ParameterObject Pageable pageable);

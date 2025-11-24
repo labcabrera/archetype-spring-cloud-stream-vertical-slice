@@ -12,7 +12,6 @@ import org.labcabrera.sample.archetype.casefolder.interfaces.http.dto.CaseFolder
 import org.labcabrera.sample.archetype.casefolder.interfaces.http.dto.UpdateCaseFolderRequest;
 import org.labcabrera.sample.archetype.shared.application.CommandBus;
 import org.labcabrera.sample.archetype.shared.application.QueryBus;
-import org.labcabrera.sample.archetype.shared.interfaces.http.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;

@@ -484,3 +484,4 @@ Para ejecutar el análisis de SonarQube deberemos crear un token en nuestra inst
 - link:https://redis.io//[Redis]
 - link:https://micrometer.io/[Micrometer]
 - link:https://www.testcontainers.org/[Testcontainers]
+- link:https://oas-validation.com/[OpenAPI Specification Validator]

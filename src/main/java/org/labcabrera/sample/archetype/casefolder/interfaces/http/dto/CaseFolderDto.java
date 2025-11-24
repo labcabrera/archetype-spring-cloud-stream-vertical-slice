@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 @Schema(description = "Case folder information")
 public record CaseFolderDto(
 
-    @Schema(description = "Unique identifier of the case folder", example = "550e8400-e29b-41d4-a716-446655440000") String id,
+    @Schema(description = "Unique identifier of the case folder", example = "550e8400-e29b-41d4-a716-446655440000", requiredMode = RequiredMode.REQUIRED) String id,
 
     @Schema(description = "Status", example = "ACTIVE", requiredMode = RequiredMode.REQUIRED) CaseFolderStatus status,
 
