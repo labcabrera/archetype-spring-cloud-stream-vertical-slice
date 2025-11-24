@@ -53,6 +53,8 @@ dependencies {
 	implementation "cz.jirutka.rsql:rsql-parser:${rsqlParserVersion}"
 	implementation "org.mapstruct:mapstruct:${mapstructVersion}"
 
+	implementation "org.webjars:swagger-ui:4.15.5"
+
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'org.postgresql:postgresql'
 	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
@@ -67,7 +69,7 @@ dependencies {
 }
 openApiGenerate {
     generatorName = "spring"
-    inputSpec = "$rootDir/src/main/resources/openapi/api.yaml"
+    inputSpec = "$rootDir/src/main/resources/static/api-definition.yaml"
     outputDir = "$buildDir/generated/sources/openapi"
     apiPackage = "com.labcabrera.sample.archetype.generated.api"
     modelPackage = "com.labcabrera.sample.archetype.generated.model"

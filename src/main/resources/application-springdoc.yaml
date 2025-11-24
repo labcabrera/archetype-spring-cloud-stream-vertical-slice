@@ -1,20 +1,5 @@
 springdoc:
   api-docs:
     enabled: false
-  # Serve a static OpenAPI YAML instead of generating at runtime
   swagger-ui:
-    # Point Swagger UI to the static endpoint we will expose at /v3/api-docs
-    url: /v3/api-docs
-#     authorizationUrl: ${IAM_AUTHORIZATION_URL:http://localhost:8090/realms/sample/protocol/openid-connect/auth}
-#     tokenUrl: ${IAM_TOKEN_URL:http://localhost:8090/realms/sample/protocol/openid-connect/token}
-#   info:
-#     title: Sample Spring Cloud Stream Vertical Slices Archetype
-#     description: "REST API for Case Folder and Case Steps management using Spring Cloud Stream, CQRS and Vertical Slices."
-#     version: 1.0.0
-#     contact:
-#       name: Luis Cabrera
-#       email: lab.cabrera@gmail.com
-#   # Comma separated list of servers for the OpenAPI `servers` section.
-#   # Example: "http://localhost:8080,https://api.example.com"
-#   # It will be read by OpenApiConfiguration and added to the OpenAPI servers list.
-#   servers: ${SPRINGDOC_SERVERS:http://localhost:8080}
+    url: /api-definition.yaml
