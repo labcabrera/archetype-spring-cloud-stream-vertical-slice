@@ -2,6 +2,7 @@ package org.labcabrera.sample.archetype.shared.infrastructure.security;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -76,9 +77,7 @@ public class SpringSecurityAdapter implements SecurityPort {
         }
         String scopeStr = jwt.getClaimAsString("scope");
         if (scopeStr != null && !scopeStr.isBlank()) {
-            for (String s : scopeStr.split(" ")) {
-                scopes.add(s);
-            }
+            scopes.addAll(Arrays.asList(scopeStr.split(" ")));
         }
         List<String> scp = jwt.getClaimAsStringList("scp");
         if (scp != null && !scp.isEmpty()) {

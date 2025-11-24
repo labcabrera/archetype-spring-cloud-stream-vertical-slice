@@ -54,31 +54,47 @@ public class SecurityConfiguration {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
             Collection<GrantedAuthority> authorities = new ArrayList<>();
-            Map<String, Object> realmAccess = jwt.getClaimAsMap("realm_access");
-            if (realmAccess != null) {
-                Object rolesObj = realmAccess.get("roles");
-                if (rolesObj instanceof List) {
-                    List<?> roles = (List<?>) rolesObj;
-                    for (Object r : roles) {
-                        authorities.add(new SimpleGrantedAuthority("ROLE_" + r.toString()));
-                    }
-                }
-            }
-            List<String> scopes = jwt.getClaimAsStringList("scope");
-            if (scopes == null) {
-                String scopeStr = jwt.getClaimAsString("scope");
-                if (scopeStr != null) {
-                    scopes = List.of(scopeStr.split(" "));
-                }
-            }
-            if (scopes != null) {
-                for (String s : scopes) {
-                    authorities.add(new SimpleGrantedAuthority("SCOPE_" + s));
-                }
-            }
+            authorities.addAll(extractRolesFromRealmAccess(jwt));
+            authorities.addAll(extractScopesAuthorities(jwt));
             return authorities;
         });
         return converter;
+    }
+
+    private Collection<GrantedAuthority> extractRolesFromRealmAccess(org.springframework.security.oauth2.jwt.Jwt jwt) {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        Map<String, Object> realmAccess = jwt.getClaimAsMap("realm_access");
+        if (realmAccess != null) {
+            Object rolesObj = realmAccess.get("roles");
+            if (rolesObj instanceof List<?> roles) {
+                for (Object r : roles) {
+                    authorities.add(new SimpleGrantedAuthority("ROLE_" + r.toString()));
+                }
+            }
+        }
+        return authorities;
+    }
+
+    private Collection<GrantedAuthority> extractScopesAuthorities(org.springframework.security.oauth2.jwt.Jwt jwt) {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        List<String> scopes = getScopesFromJwt(jwt);
+        if (scopes != null) {
+            for (String s : scopes) {
+                authorities.add(new SimpleGrantedAuthority("SCOPE_" + s));
+            }
+        }
+        return authorities;
+    }
+
+    private List<String> getScopesFromJwt(org.springframework.security.oauth2.jwt.Jwt jwt) {
+        List<String> scopes = jwt.getClaimAsStringList("scope");
+        if (scopes == null) {
+            String scopeStr = jwt.getClaimAsString("scope");
+            if (scopeStr != null) {
+                scopes = List.of(scopeStr.split(" "));
+            }
+        }
+        return scopes;
     }
 
 }

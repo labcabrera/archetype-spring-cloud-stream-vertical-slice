@@ -18,6 +18,7 @@ import lombok.Getter;
 @Data
 @AllArgsConstructor
 @Getter
+@SuppressWarnings("null")
 public class GenericRsqlSpecification<T> implements Specification<T> {
 
     private transient String property;
@@ -25,7 +26,6 @@ public class GenericRsqlSpecification<T> implements Specification<T> {
     private transient List<String> arguments;
 
     @Override
-    @SuppressWarnings("null")
     public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
         Path<?> path = getPath(root, property);
         List<Object> args = castArguments(path);
