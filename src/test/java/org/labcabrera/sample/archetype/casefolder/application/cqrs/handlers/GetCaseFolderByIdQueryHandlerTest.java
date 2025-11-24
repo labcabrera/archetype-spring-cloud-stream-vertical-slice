@@ -2,34 +2,34 @@ package org.labcabrera.sample.archetype.casefolder.application.cqrs.handlers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.labcabrera.sample.archetype.casefolder.application.cqrs.queries.GetCaseFoldersByRsqlQuery;
+import org.labcabrera.sample.archetype.casefolder.application.cqrs.queries.GetCaseFolderByIdQuery;
 import org.labcabrera.sample.archetype.casefolder.application.ports.CaseFolderRepository;
 import org.labcabrera.sample.archetype.casefolder.domain.CaseFolder;
 import org.labcabrera.sample.archetype.casefolder.domain.IdCard;
 import org.labcabrera.sample.archetype.casefolder.domain.IdCardType;
+import org.labcabrera.sample.archetype.shared.application.Guard;
 import org.labcabrera.sample.archetype.shared.application.SecurityPort;
 import org.labcabrera.sample.archetype.shared.application.SecurityPort.AuthenticatedUser;
+import org.labcabrera.sample.archetype.shared.domain.exceptions.NotFoundException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings("null")
-class GetCaseFoldersByRsqlQueryHandlerTest {
+class GetCaseFolderByIdQueryHandlerTest {
 
     @Mock
     private CaseFolderRepository caseFolderRepository;
@@ -37,46 +37,58 @@ class GetCaseFoldersByRsqlQueryHandlerTest {
     @Mock
     private SecurityPort securityPort;
 
-    @InjectMocks
-    private GetCaseFoldersByRsqlQueryHandler handler;
+    @Mock
+    private Guard<CaseFolder> caseFolderGuard;
 
+    @InjectMocks
+    private GetCaseFolderByIdQueryHandler handler;
+
+    private GetCaseFolderByIdQuery query;
     private AuthenticatedUser authenticatedUser;
-    private CaseFolder caseFolder1;
-    private Pageable pageable;
+    private CaseFolder caseFolder;
 
     @BeforeEach
     void setUp() {
         authenticatedUser = new AuthenticatedUser(
-            "user-1",
+            "user-id-123",
             "testuser",
             Set.of("case-folder-read"),
             Collections.emptySet());
-        caseFolder1 = CaseFolder.create(
+
+        caseFolder = CaseFolder.create(
             "JOHN",
             "DOE",
             "SMITH",
             new IdCard("12345678A", IdCardType.NIF),
             "testuser");
-        pageable = PageRequest.of(0, 10);
+
+        query = new GetCaseFolderByIdQuery(caseFolder.getId());
     }
 
     @Test
-    void testHandle_WithValidRsql_ReturnsFilteredResults() {
-        String rsql = "name==JOHN";
-        GetCaseFoldersByRsqlQuery query = new GetCaseFoldersByRsqlQuery(rsql, pageable);
-        Page<CaseFolder> expectedPage = new PageImpl<>(List.of(caseFolder1), pageable, 1);
-
+    void testHandle_Success() {
         when(securityPort.requireCurrentUser()).thenReturn(authenticatedUser);
-        when(caseFolderRepository.findByRsql(rsql, pageable, authenticatedUser))
-            .thenReturn(expectedPage);
+        when(caseFolderRepository.findById(query.caseFolderId())).thenReturn(Optional.of(caseFolder));
 
-        Page<CaseFolder> result = handler.handle(query);
+        CaseFolder result = handler.handle(query);
 
         assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-        assertEquals("JOHN", result.getContent().get(0).getName());
+        assertEquals(caseFolder.getId(), result.getId());
+        assertEquals("JOHN", result.getName());
+        assertEquals("DOE", result.getFirstSurname());
         verify(securityPort).requireCurrentUser();
-        verify(caseFolderRepository).findByRsql(rsql, pageable, authenticatedUser);
+        verify(caseFolderRepository).findById(query.caseFolderId());
+        verify(caseFolderGuard).checkRead(caseFolder, authenticatedUser);
     }
 
+    @Test
+    void testHandle_CaseFolderNotFound_ThrowsNotFoundException() {
+        when(securityPort.requireCurrentUser()).thenReturn(authenticatedUser);
+        when(caseFolderRepository.findById(query.caseFolderId())).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> handler.handle(query));
+
+        verify(caseFolderRepository).findById(query.caseFolderId());
+        verify(caseFolderGuard, never()).checkRead(any(), any());
+    }
 }

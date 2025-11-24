@@ -2,6 +2,7 @@ package org.labcabrera.sample.archetype.casefolder.application.cqrs.handlers;
 
 import org.labcabrera.sample.archetype.casefolder.application.cqrs.commands.UpdateCaseFolderCommand;
 import org.labcabrera.sample.archetype.casefolder.application.ports.CaseFolderEventBusPort;
+import org.labcabrera.sample.archetype.casefolder.application.ports.CaseFolderMetricPort;
 import org.labcabrera.sample.archetype.casefolder.application.ports.CaseFolderRepository;
 import org.labcabrera.sample.archetype.casefolder.domain.CaseFolder;
 import org.labcabrera.sample.archetype.casefolder.domain.events.CaseFolderUpdatedEvent;
@@ -24,6 +25,7 @@ public class UpdateCaseFolderCommandHandler implements CommandHandler<UpdateCase
     private final CaseFolderEventBusPort caseFolderEventBusPort;
     private final Guard<CaseFolder> caseFolderGuard;
     private final SecurityPort securityPort;
+    private final CaseFolderMetricPort caseFolderMetricPort;
 
     public CaseFolder handle(UpdateCaseFolderCommand command) {
         var user = securityPort.requireCurrentUser();
@@ -35,6 +37,7 @@ public class UpdateCaseFolderCommandHandler implements CommandHandler<UpdateCase
         existing.normalize();
         var caseFolder = caseFolderRepository.update(existing);
         sendNotification(caseFolder);
+        caseFolderMetricPort.incrementCaseFolderUpdatedCounter();
         return caseFolder;
     }
 

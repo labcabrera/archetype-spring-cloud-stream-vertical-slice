@@ -4,4 +4,8 @@ public interface CaseFolderMetricPort {
 
     void incrementCaseFolderCreatedCounter();
 
+    void incrementCaseFolderUpdatedCounter();
+
+    void incrementCaseFolderDeletedCounter();
+
 }

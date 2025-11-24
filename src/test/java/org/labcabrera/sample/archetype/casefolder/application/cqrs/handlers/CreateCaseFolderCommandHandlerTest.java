@@ -1,8 +1,10 @@
 package org.labcabrera.sample.archetype.casefolder.application.cqrs.handlers;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -90,7 +92,7 @@ class CreateCaseFolderCommandHandlerTest {
     }
 
     @Test
-    void testHandle() {
+    void testHandle_success() {
         when(securityPort.requireCurrentUser()).thenReturn(authenticatedUser);
         when(validator.validate(any())).thenReturn(Collections.emptySet());
         when(caseFolderRepository.save(any(CaseFolder.class))).thenReturn(caseFolder);
@@ -109,4 +111,16 @@ class CreateCaseFolderCommandHandlerTest {
         verify(caseFolderRepository).save(any(CaseFolder.class));
         verify(caseFolderEventBusPort).publish(any(CaseFolderCreatedEvent.class));
     }
+
+    @Test
+    void testHandle_notAllowed() {
+        when(securityPort.requireCurrentUser()).thenReturn(authenticatedUser);
+        doThrow(new SecurityException("Not allowed"))
+            .when(caseFolderGuard).checkCreate(any(AuthenticatedUser.class));
+        assertThrows(SecurityException.class, () -> {
+            handler.handle(command);
+        });
+        verify(securityPort).requireCurrentUser();
+    }
+
 }

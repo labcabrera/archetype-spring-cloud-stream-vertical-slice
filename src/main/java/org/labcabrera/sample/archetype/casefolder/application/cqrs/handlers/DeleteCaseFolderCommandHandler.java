@@ -2,6 +2,7 @@ package org.labcabrera.sample.archetype.casefolder.application.cqrs.handlers;
 
 import org.labcabrera.sample.archetype.casefolder.application.cqrs.commands.DeleteCaseFolderCommand;
 import org.labcabrera.sample.archetype.casefolder.application.ports.CaseFolderEventBusPort;
+import org.labcabrera.sample.archetype.casefolder.application.ports.CaseFolderMetricPort;
 import org.labcabrera.sample.archetype.casefolder.application.ports.CaseFolderRepository;
 import org.labcabrera.sample.archetype.casefolder.domain.CaseFolder;
 import org.labcabrera.sample.archetype.casefolder.domain.events.CaseFolderDeletedEvent;
@@ -23,6 +24,7 @@ public class DeleteCaseFolderCommandHandler implements CommandHandler<DeleteCase
     private final CaseFolderEventBusPort caseFolderEventBusPort;
     private final Guard<CaseFolder> caseFolderGuard;
     private final SecurityPort securityPort;
+    private final CaseFolderMetricPort caseFolderMetricPort;
 
     @Override
     public Void handle(DeleteCaseFolderCommand command) {
@@ -33,6 +35,7 @@ public class DeleteCaseFolderCommandHandler implements CommandHandler<DeleteCase
         caseFolderGuard.checkWrite(caseFolder, user);
         caseFolderRepository.deleteById(command.caseFolderId());
         sendNotification(caseFolder);
+        caseFolderMetricPort.incrementCaseFolderDeletedCounter();
         return null;
     }
 
