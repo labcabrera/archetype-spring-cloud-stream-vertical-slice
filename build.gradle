@@ -2,7 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.7'
 	id 'io.spring.dependency-management' version '1.1.7'
-	// openapi generator plugin intentionally not applied; CLI jar used instead
+	id 'org.openapi.generator' version '7.17.0'
 	id 'org.sonarqube' version '6.0.1.5171'
 	id 'jacoco'
 }
@@ -65,54 +65,27 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 }
-
-// OpenAPI generator CLI integration: download CLI jar and run it via `java -jar`
-configurations {
-	openapiGenerator
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$rootDir/src/main/resources/openapi/api.yaml"
+    outputDir = "$buildDir/generated/sources/openapi"
+    apiPackage = "com.labcabrera.sample.archetype.generated.api"
+    modelPackage = "com.labcabrera.sample.archetype.generated.model"
+    configOptions = [
+        dateLibrary         : "java8",
+        interfaceOnly       : "true",
+        useTags             : "true",
+        useSpringBoot3      : "true",
+        singleContentTypes  : "true",
+        unhandledException  : "true",
+    ]
 }
 
-dependencies {
-	openapiGenerator "org.openapitools:openapi-generator-cli:6.6.0"
-}
-
-// Configure input/output and packages for generated code
-def openApiInput = "${projectDir}/src/main/resources/api/api.yaml"
-def openApiOutput = "${buildDir}/generated/sources/openapi"
-def openApiApiPackage = 'org.labcabrera.sample.archetype.generated.api'
-def openApiModelPackage = 'org.labcabrera.sample.archetype.generated.model'
-def openApiInvokerPackage = 'org.labcabrera.sample.archetype.generated.invoker'
-
-task openApiGenerate(type: Exec) {
-	group = 'openapi'
-	description = 'Generate server stub from OpenAPI spec using openapi-generator-cli (exec jar)'
-	doFirst {
-		// ensure the CLI jar is resolved
-		configurations.openapiGenerator.resolve()
-		def jar = configurations.openapiGenerator.singleFile
-		file(openApiOutput).mkdirs()
-		commandLine = [
-			'java', '-jar', jar.absolutePath,
-			'generate',
-			'-g', 'spring',
-			'-i', openApiInput,
-			'-o', openApiOutput,
-			'--api-package', openApiApiPackage,
-			'--model-package', openApiModelPackage,
-			'--invoker-package', openApiInvokerPackage,
-			'--additional-properties', 'library=spring-boot,useBeanValidation=true,useOptional=true,dateLibrary=java8,useSpringBoot3=true',
-			'--global-property', 'models=true,apis=true,supportingFiles=false'
-		]
-	}
-}
-
-// Include generated sources in the main source set so they are compiled automatically
-sourceSets.main.java.srcDir file("${openApiOutput}/src/main/java")
+sourceSets.main.java.srcDir file("$buildDir/generated/sources/openapi/src/main/java")
 
 tasks.named('compileJava') {
 	dependsOn tasks.named('openApiGenerate')
 }
-
-// (generated sources already added above)
 
 tasks.named('test') {
 	useJUnitPlatform()
