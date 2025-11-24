@@ -81,6 +81,7 @@ openApiGenerate {
         singleContentTypes  : "true",
         unhandledException  : "true",
 		openApiNullable     : "false",
+		dateLibrary         : "java8-localdatetime"
     ]
 	additionalProperties = [
 		useJacksonNullable: "false"
