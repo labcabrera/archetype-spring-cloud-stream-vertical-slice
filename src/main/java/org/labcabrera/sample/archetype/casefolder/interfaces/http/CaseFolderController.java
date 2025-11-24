@@ -8,6 +8,7 @@ import org.labcabrera.sample.archetype.casefolder.application.cqrs.queries.GetCa
 import org.labcabrera.sample.archetype.casefolder.domain.CaseFolder;
 import org.labcabrera.sample.archetype.casefolder.interfaces.http.dto.CreateCaseFolderRequest;
 import org.labcabrera.sample.archetype.casefolder.interfaces.http.dto.CaseFolderDto;
+import org.labcabrera.sample.archetype.casefolder.interfaces.http.dto.CaseFolderPageResponse;
 import org.labcabrera.sample.archetype.casefolder.interfaces.http.dto.UpdateCaseFolderRequest;
 import org.labcabrera.sample.archetype.shared.application.CommandBus;
 import org.labcabrera.sample.archetype.shared.application.QueryBus;
@@ -54,11 +55,11 @@ public class CaseFolderController implements CaseFolderControllerDefinition {
     }
 
     @Override
-    public ResponseEntity<PageResponse<CaseFolderDto>> getCaseFoldersByRsql(String rsql, Pageable pageable) {
+    public ResponseEntity<CaseFolderPageResponse> getCaseFoldersByRsql(String rsql, Pageable pageable) {
         var query = new GetCaseFoldersByRsqlQuery(rsql, pageable);
         Page<CaseFolder> page = queryBus.dispatch(query);
         var pageDto = page.map(mapper::toDto);
-        var response = new PageResponse<>(pageDto);
+        var response = new CaseFolderPageResponse(pageDto);
         return ResponseEntity.ok(response);
     }
 

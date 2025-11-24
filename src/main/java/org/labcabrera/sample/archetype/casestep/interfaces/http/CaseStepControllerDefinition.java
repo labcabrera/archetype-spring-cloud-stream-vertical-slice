@@ -24,8 +24,8 @@ public interface CaseStepControllerDefinition {
     @GetMapping("/{caseStepId}")
     @Operation(summary = "Get case step by id", description = "Retrieve a specific case step by its unique identifier")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Case step found", content = @Content(schema = @Schema(implementation = CaseStepDto.class))),
-        @ApiResponse(responseCode = "404", description = "Case step not found", content = @Content(schema = @Schema(implementation = ApiError.class)))
+        @ApiResponse(responseCode = "200", description = "Case step found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CaseStepDto.class))),
+        @ApiResponse(responseCode = "404", description = "Case step not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
     })
     ResponseEntity<CaseStepDto> getCaseStepById(
         @Parameter(description = "Unique case step identifier", required = true) @PathVariable String caseStepId);

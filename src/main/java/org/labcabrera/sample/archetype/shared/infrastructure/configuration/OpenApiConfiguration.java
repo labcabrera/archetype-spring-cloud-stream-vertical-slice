@@ -1,6 +1,7 @@
 package org.labcabrera.sample.archetype.shared.infrastructure.configuration;
 
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.Components;
@@ -9,6 +10,9 @@ import io.swagger.v3.oas.models.security.OAuthFlows;
 import io.swagger.v3.oas.models.security.Scopes;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +28,8 @@ public class OpenApiConfiguration {
 		@Value("${springdoc.info.contact.name:}") String contactName,
 		@Value("${springdoc.info.contact.email:}") String contactEmail,
 		@Value("${springdoc.oAuthFlow.authorizationUrl:}") String authorizationUrl,
-		@Value("${springdoc.oAuthFlow.tokenUrl:}") String tokenUrl) {
+		@Value("${springdoc.oAuthFlow.tokenUrl:}") String tokenUrl,
+		@Value("#{'${springdoc.servers:}'.split(',')}") List<String> serverUrls) {
 
 		Info info = new Info()
 			.title(title)
@@ -39,6 +44,18 @@ public class OpenApiConfiguration {
 			info.setContact(contact);
 		}
 		OpenAPI openAPI = new OpenAPI().info(info);
+
+		// Add servers from configuration (comma separated list in property `springdoc.servers`)
+		if (serverUrls != null) {
+			for (String s : serverUrls) {
+				if (s != null) {
+					String url = s.trim();
+					if (!url.isEmpty()) {
+						openAPI.addServersItem(new Server().url(url));
+					}
+				}
+			}
+		}
 		Components components = new Components();
 
 		// Bearer JWT security scheme
