@@ -471,7 +471,7 @@ casefoldercreated_total 1.0
 Para ejecutar el análisis de SonarQube deberemos crear un token en nuestra instancia de SonarQube y exportarlo como variable de entorno `SONAR_TOKEN`. Después ejecutamos el siguiente comando:
 
 ----
-./gradlew sonarqube -Dsonar.token=sqa_c19607a1800568da7fc27af1dd7f8e1f06d3179f
+./gradlew sonarqube -Dsonar.token=${SONAR_TOKEN}
 ----
 
 == Referencias

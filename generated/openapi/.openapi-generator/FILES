@@ -1,0 +1,14 @@
+.openapi-generator-ignore
+README.md
+pom.xml
+src/main/java/org/openapitools/api/ApiApi.java
+src/main/java/org/openapitools/api/ApiUtil.java
+src/main/java/org/openapitools/model/ApiError.java
+src/main/java/org/openapitools/model/ApiErrorDetail.java
+src/main/java/org/openapitools/model/CaseFolderDto.java
+src/main/java/org/openapitools/model/CaseFolderPageResponse.java
+src/main/java/org/openapitools/model/CaseStepDto.java
+src/main/java/org/openapitools/model/CreateCaseFolderRequest.java
+src/main/java/org/openapitools/model/IdCardDto.java
+src/main/java/org/openapitools/model/Pagination.java
+src/main/java/org/openapitools/model/UpdateCaseFolderRequest.java

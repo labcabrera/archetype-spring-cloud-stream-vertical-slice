@@ -78,7 +78,11 @@ openApiGenerate {
         useSpringBoot3      : "true",
         singleContentTypes  : "true",
         unhandledException  : "true",
+		openApiNullable     : "false",
     ]
+	additionalProperties = [
+		useJacksonNullable: "false"
+	]
 }
 
 sourceSets.main.java.srcDir file("$buildDir/generated/sources/openapi/src/main/java")

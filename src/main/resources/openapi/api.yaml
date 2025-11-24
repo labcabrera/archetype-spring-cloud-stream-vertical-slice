@@ -228,7 +228,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseStepDto'
+                type: array
+                items:
+                  $ref: '#/components/schemas/CaseStepDto'
         '404':
           description: Case steps not found
           content:
