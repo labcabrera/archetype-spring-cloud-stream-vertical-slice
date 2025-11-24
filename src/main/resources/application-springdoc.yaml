@@ -1,23 +1,10 @@
 springdoc:
   api-docs:
-    enabled: true
-  # si en algún momento quieres usar solo un YAML estático:
+    enabled: false
+  # Serve a static OpenAPI YAML instead of generating at runtime
   swagger-ui:
+    # Point Swagger UI to the static endpoint we will expose at /v3/api-docs
     url: /v3/api-docs
-
-# springdoc:
-#   api-docs:
-#     path: /v3/api-docs
-#   swagger-ui:
-#     path: /swagger-ui.html
-#     operationsSorter: alpha
-#     tagsSorter: alpha
-#     oauth:
-#       client-id: ${IAM_SAMPLE_CLIENT_ID:sample-client}
-#       client-secret: ${IAM_SAMPLE_CLIENT_SECRET:XiaV7RjIAZsrMrlEke5YdFRSxs9aCGpQ}
-#       scope-separator: " "
-#       use-pkce-with-authorization-code-grant: true
-#   oAuthFlow:
 #     authorizationUrl: ${IAM_AUTHORIZATION_URL:http://localhost:8090/realms/sample/protocol/openid-connect/auth}
 #     tokenUrl: ${IAM_TOKEN_URL:http://localhost:8090/realms/sample/protocol/openid-connect/token}
 #   info:
