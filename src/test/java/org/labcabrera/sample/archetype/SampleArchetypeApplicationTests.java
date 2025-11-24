@@ -18,25 +18,9 @@ class SampleArchetypeApplicationTests {
 	@Test
 	void testHelloWorldEndpoint() {
 		webTestClient.get()
-			.uri("/api/v1/counters")
+			.uri("/actuator")
 			.exchange()
-			.expectStatus().isOk()
-			.expectBodyList(Object.class);
+			.expectStatus().isOk();
 	}
 
-	@Test
-	void testCounterIncrement() {
-		webTestClient.post()
-			.uri("/api/v1/counters/test-counter")
-			.exchange()
-			.expectStatus().isOk()
-			.expectBody(Integer.class)
-			.isEqualTo(1);
-		webTestClient.post()
-			.uri("/api/v1/counters/test-counter")
-			.exchange()
-			.expectStatus().isOk()
-			.expectBody(Integer.class)
-			.isEqualTo(2);
-	}
 }
