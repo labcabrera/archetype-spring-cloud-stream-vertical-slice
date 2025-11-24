@@ -13,7 +13,7 @@ description = 'Archetype for Spring Boot using Spring Cloud Stream'
 
 ext {
 	logstashLogbackVersion = '7.4'
-	springdocVersion = '2.7.0'
+	springdocVersion = '2.8.14'
 	swaggerAnnotationsVersion = '2.2.13'
 	springCloudVersion = '2025.0.0'
 	rsqlParserVersion = '2.1.0'
@@ -69,7 +69,7 @@ dependencies {
 }
 openApiGenerate {
     generatorName = "spring"
-    inputSpec = "$rootDir/src/main/resources/static/api-definition.yaml"
+    inputSpec = "$rootDir/src/main/resources/api-definition.yaml"
     outputDir = "$buildDir/generated/sources/openapi"
     apiPackage = "com.labcabrera.sample.archetype.generated.api"
     modelPackage = "com.labcabrera.sample.archetype.generated.model"

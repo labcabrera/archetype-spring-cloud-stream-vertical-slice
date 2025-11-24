@@ -36,6 +36,7 @@ public class SecurityConfiguration {
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                     "/api-definition.yaml",
+                    "/api-definition.json",
                     "/actuator/health",
                     "/actuator/info")
                 .permitAll()
