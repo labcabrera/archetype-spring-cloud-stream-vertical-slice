@@ -3,6 +3,7 @@ package org.labcabrera.sample.archetype.casestep.application.cqrs.handlers;
 import org.labcabrera.sample.archetype.casestep.application.cqrs.queries.GetCaseStepByIdQuery;
 import org.labcabrera.sample.archetype.casestep.application.ports.CaseStepRepository;
 import org.labcabrera.sample.archetype.casestep.domain.CaseStep;
+import org.labcabrera.sample.archetype.shared.application.Guard;
 import org.labcabrera.sample.archetype.shared.application.QueryHandler;
 import org.labcabrera.sample.archetype.shared.application.SecurityPort;
 import org.labcabrera.sample.archetype.shared.domain.exceptions.NotFoundException;
@@ -18,7 +19,7 @@ public class GetCaseStepByIdQueryHandler implements QueryHandler<GetCaseStepById
 
     private final CaseStepRepository caseStepRepository;
     private final SecurityPort securityPort;
-    // private final Guard<CaseStep> caseStepGuard;
+    private final Guard<CaseStep> caseStepGuard;
 
     public CaseStep handle(GetCaseStepByIdQuery query) {
         var user = securityPort.requireCurrentUser();
@@ -26,7 +27,7 @@ public class GetCaseStepByIdQueryHandler implements QueryHandler<GetCaseStepById
         var caseStep = caseStepRepository
             .findById(query.caseStepId())
             .orElseThrow(() -> new NotFoundException("case-step.msg.not-found", query.caseStepId(), CaseStep.class));
-        // caseStepGuard.checkRead(caseStep, user);
+        caseStepGuard.checkRead(caseStep, user);
         return caseStep;
     }
 }

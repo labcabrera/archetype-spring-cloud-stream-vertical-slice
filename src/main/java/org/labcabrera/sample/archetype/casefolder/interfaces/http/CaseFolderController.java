@@ -16,8 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.labcabrera.sample.archetype.casefolder.interfaces.http.mappers.CaseFolderDtoMapper;
@@ -35,7 +33,7 @@ public class CaseFolderController implements CaseFolderControllerDefinition {
     private final CaseFolderDtoMapper mapper;
 
     @Override
-    public ResponseEntity<CaseFolderDto> getCaseFolderById(@PathVariable String caseFolderId) {
+    public ResponseEntity<CaseFolderDto> getCaseFolderById(String caseFolderId) {
         var query = new GetCaseFolderByIdQuery(caseFolderId);
         CaseFolder caseFolder = queryBus.dispatch(query);
         var caseFolderDto = mapper.toDto(caseFolder);
@@ -43,7 +41,7 @@ public class CaseFolderController implements CaseFolderControllerDefinition {
     }
 
     @Override
-    public ResponseEntity<CaseFolderDto> create(@RequestBody @Validated CreateCaseFolderRequest request) {
+    public ResponseEntity<CaseFolderDto> create(@Validated CreateCaseFolderRequest request) {
         var command = new CreateCaseFolderCommand(
             request.name(),
             request.firstSurname(),
@@ -59,7 +57,7 @@ public class CaseFolderController implements CaseFolderControllerDefinition {
     public ResponseEntity<PageResponse<CaseFolderDto>> getCaseFoldersByRsql(String rsql, Pageable pageable) {
         var query = new GetCaseFoldersByRsqlQuery(rsql, pageable);
         Page<CaseFolder> page = queryBus.dispatch(query);
-        var pageDto = page.map(caseFolder -> mapper.toDto(caseFolder));
+        var pageDto = page.map(mapper::toDto);
         var response = new PageResponse<>(pageDto);
         return ResponseEntity.ok(response);
     }

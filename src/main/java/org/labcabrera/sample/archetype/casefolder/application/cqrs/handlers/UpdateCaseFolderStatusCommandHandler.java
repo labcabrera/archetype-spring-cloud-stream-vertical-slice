@@ -25,8 +25,7 @@ public class UpdateCaseFolderStatusCommandHandler implements CommandHandler<Upda
             .orElseThrow(() -> new NotFoundException("case-folder.msg.not-found", command.caseFolderId(), CaseFolder.class));
         var user = securityPort.requireCurrentUser();
         caseFolderGuard.checkWrite(current, user);
-        var updated = caseFolderRepository.updateStatus(current.getId(), command.status());
-        return updated;
+        return caseFolderRepository.updateStatus(current.getId(), command.status());
     }
 
 }

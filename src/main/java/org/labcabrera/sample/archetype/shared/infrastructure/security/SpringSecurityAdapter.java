@@ -71,7 +71,7 @@ public class SpringSecurityAdapter implements SecurityPort {
         Set<String> scopes = new HashSet<>();
         List<String> scopeList = jwt.getClaimAsStringList("scope");
         if (scopeList != null && !scopeList.isEmpty()) {
-            scopeList.forEach(s -> scopes.add(s));
+            scopeList.forEach(scopes::add);
             return scopes;
         }
         String scopeStr = jwt.getClaimAsString("scope");
@@ -82,7 +82,7 @@ public class SpringSecurityAdapter implements SecurityPort {
         }
         List<String> scp = jwt.getClaimAsStringList("scp");
         if (scp != null && !scp.isEmpty()) {
-            scp.forEach(s -> scopes.add(s));
+            scp.forEach(scopes::add);
         }
         return scopes;
     }

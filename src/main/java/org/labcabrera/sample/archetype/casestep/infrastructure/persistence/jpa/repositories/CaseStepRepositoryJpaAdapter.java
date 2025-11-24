@@ -24,13 +24,13 @@ public class CaseStepRepositoryJpaAdapter implements CaseStepRepository {
 
     @Override
     public Optional<CaseStep> findById(String caseStepId) {
-        return jpaRepository.findById(caseStepId).map(entity -> mapper.toDomain(entity));
+        return jpaRepository.findById(caseStepId).map(mapper::toDomain);
     }
 
     @Override
     public List<CaseStep> findByCaseFolderId(String caseFolderId) {
         var list = jpaRepository.findByCaseFolderId(caseFolderId);
-        return list.stream().map(entity -> mapper.toDomain(entity)).toList();
+        return list.stream().map(mapper::toDomain).toList();
     }
 
     @Override

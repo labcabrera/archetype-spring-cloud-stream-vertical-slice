@@ -34,7 +34,7 @@ public class CaseStepController implements CaseStepControllerDefinition {
     public ResponseEntity<List<CaseStepDto>> getCaseStepsByCaseFolderId(String caseFolderId) {
         var query = new GetCaseStepsByCaseFolderIdQuery(caseFolderId);
         List<CaseStep> caseSteps = queryBus.dispatch(query);
-        var dtos = caseSteps.stream().map(step -> mapper.toDto(step)).toList();
+        var dtos = caseSteps.stream().map(mapper::toDto).toList();
         return ResponseEntity.ok(dtos);
     }
 

@@ -24,8 +24,7 @@ public class GetCaseStepsByCaseFolderIdQueryHandler implements QueryHandler<GetC
     public List<CaseStep> handle(GetCaseStepsByCaseFolderIdQuery query) {
         var user = securityPort.requireCurrentUser();
         log.debug("Getting case steps for case folder {} (user={})", query.caseFolderId(), user.username());
-        var caseSteps = caseStepRepository.findByCaseFolderId(query.caseFolderId());
-        return caseSteps;
+        return caseStepRepository.findByCaseFolderId(query.caseFolderId());
     }
 
 }

@@ -44,7 +44,7 @@ public class CreateInitialCaseStepCommandHandler implements CommandHandler<Creat
     }
 
     private CaseStep createInitialCaseStep(CaseFolder caseFolder) {
-        CaseStep caseStep = CaseStep.builder()
+        return CaseStep.builder()
             .id(UUID.randomUUID().toString())
             .caseFolderId(caseFolder.getId())
             .stepType(StepType.INITIAL_REVIEW)
@@ -53,7 +53,6 @@ public class CreateInitialCaseStepCommandHandler implements CommandHandler<Creat
             .owner(caseFolder.getOwner())
             .createdAt(LocalDateTime.now())
             .build();
-        return caseStep;
     }
 
     private void publishCaseStepCreatedEvent(CaseStep caseStep) {

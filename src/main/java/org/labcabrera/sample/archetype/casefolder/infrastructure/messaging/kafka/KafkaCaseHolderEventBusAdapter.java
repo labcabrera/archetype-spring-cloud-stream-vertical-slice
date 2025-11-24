@@ -28,12 +28,12 @@ public class KafkaCaseHolderEventBusAdapter
 
     @Override
     public void publish(CaseFolderUpdatedEvent event) {
-        sendNotification("caseFolderCreated-out-0", event);
+        sendNotification("caseFolderUpdated-out-0", event);
     }
 
     @Override
     public void publish(CaseFolderDeletedEvent event) {
-        sendNotification("caseFolderCreated-out-0", event);
+        sendNotification("caseFolderDeleted-out-0", event);
     }
 
 }

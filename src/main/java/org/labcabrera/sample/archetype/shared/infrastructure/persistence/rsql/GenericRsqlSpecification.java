@@ -20,9 +20,9 @@ import lombok.Getter;
 @Getter
 public class GenericRsqlSpecification<T> implements Specification<T> {
 
-    private String property;
-    private ComparisonOperator operator;
-    private List<String> arguments;
+    private transient String property;
+    private transient ComparisonOperator operator;
+    private transient List<String> arguments;
 
     @Override
     @SuppressWarnings("null")
@@ -39,6 +39,7 @@ public class GenericRsqlSpecification<T> implements Specification<T> {
             else if (argument == null) {
                 return builder.isNull(path);
             }
+            break;
         }
         case NOT_EQUAL: {
             if (argument instanceof String) {
@@ -47,6 +48,7 @@ public class GenericRsqlSpecification<T> implements Specification<T> {
             else if (argument == null) {
                 return builder.isNotNull(path);
             }
+            break;
         }
         case GREATER_THAN: {
             return builder.greaterThan(path.as(String.class), argument.toString());
@@ -75,7 +77,7 @@ public class GenericRsqlSpecification<T> implements Specification<T> {
 
     private List<Object> castArguments(final Path<?> path) {
         Class<? extends Object> type = path.getJavaType();
-        List<Object> args = arguments.stream().map(arg -> {
+        return arguments.stream().map(arg -> {
             if (type.equals(Integer.class)) {
                 return Integer.parseInt(arg);
             }
@@ -86,7 +88,6 @@ public class GenericRsqlSpecification<T> implements Specification<T> {
                 return arg;
             }
         }).collect(Collectors.toList());
-        return args;
     }
 
     private Path<?> getPath(Root<T> root, String property) {

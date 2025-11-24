@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class ConstraintViolationException extends DomainException {
 
-    private Set<? extends ConstraintViolation<?>> violations;
+    private final transient Set<? extends ConstraintViolation<?>> violations;
 
     public ConstraintViolationException(String code, Set<? extends ConstraintViolation<?>> violations) {
         super(code, 400);

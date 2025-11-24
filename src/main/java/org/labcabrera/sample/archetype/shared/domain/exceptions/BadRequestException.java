@@ -3,7 +3,7 @@ package org.labcabrera.sample.archetype.shared.domain.exceptions;
 public class BadRequestException extends DomainException {
 
     public BadRequestException(String code, Object... args) {
-        super(code, 400);
+        super(code, 400, args);
     }
 
     public BadRequestException(String code, Throwable cause) {

@@ -17,10 +17,8 @@ public class CaseFolderGuard implements Guard<CaseFolder> {
         if (user.hasRole(ROLE_CASE_FOLDER_MANAGEMENT)) {
             return;
         }
-        if (user.hasRole(ROLE_CASE_FOLDER_READ)) {
-            if (caseFolder.getOwner().equals(user.username())) {
-                return;
-            }
+        if (user.hasRole(ROLE_CASE_FOLDER_READ) && (caseFolder.getOwner().equals(user.username()))) {
+            return;
         }
         throw new SecurityException("User " + user.username() + " is not allowed to read case folder " + caseFolder.getId());
     }
@@ -30,10 +28,8 @@ public class CaseFolderGuard implements Guard<CaseFolder> {
         if (user.hasRole(ROLE_CASE_FOLDER_MANAGEMENT)) {
             return;
         }
-        if (user.hasRole(ROLE_CASE_FOLDER_WRITE)) {
-            if (caseFolder.getOwner().equals(user.username())) {
-                return;
-            }
+        if (user.hasRole(ROLE_CASE_FOLDER_WRITE) && (caseFolder.getOwner().equals(user.username()))) {
+            return;
         }
         throw new SecurityException("User " + user.username() + " is not allowed to write case folder " + caseFolder.getId());
     }

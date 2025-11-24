@@ -41,7 +41,7 @@ public class CaseFolderRepositoryJpaAdapter implements CaseFolderRepository {
     @Override
     @Cacheable(value = "caseFolder", key = "#caseFolderId", unless = "#result == null || #result.isEmpty()")
     public Optional<CaseFolder> findById(String caseFolderId) {
-        return jpaRepository.findById(caseFolderId).map(entity -> mapper.toDomain(entity));
+        return jpaRepository.findById(caseFolderId).map(mapper::toDomain);
     }
 
     @Override
@@ -54,14 +54,14 @@ public class CaseFolderRepositoryJpaAdapter implements CaseFolderRepository {
         };
         if (StringUtils.isBlank(rsql)) {
             var page = jpaRepository.findAll(authSpec, pageable);
-            return page.map(entity -> mapper.toDomain(entity));
+            return page.map(mapper::toDomain);
         }
         try {
             Node rootNode = rsqlParser.parse(rsql);
             Specification<CaseFolderEntity> spec = rootNode.accept(new CustomRsqlVisitor<CaseFolderEntity>());
             Specification<CaseFolderEntity> finalSpec = (spec == null) ? authSpec : spec.and(authSpec);
             var page = jpaRepository.findAll(finalSpec, pageable);
-            return page.map(entity -> mapper.toDomain(entity));
+            return page.map(mapper::toDomain);
         }
         catch (Exception ex) {
             throw new BadRequestException("rsql.msg.err.parse", ex, rsql);

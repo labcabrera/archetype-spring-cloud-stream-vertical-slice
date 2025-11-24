@@ -53,7 +53,7 @@ public class RestExceptionHandler {
     public ResponseEntity<ApiError> handleValidationExceptions(MethodArgumentNotValidException ex) {
         log.error("Validation exception", ex);
         List<ApiErrorDetail> errors = new ArrayList<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
+        ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.add(new ApiErrorDetail(fieldName, errorMessage));
@@ -139,9 +139,8 @@ public class RestExceptionHandler {
 
     private ApiError fromDomainException(DomainException ex) {
         var details = new ArrayList<ApiErrorDetail>();
-        if (ex instanceof ConstraintViolationException) {
-            var ve = (ConstraintViolationException) ex;
-            ve.getViolations().stream()
+        if (ex instanceof ConstraintViolationException cvex) {
+            cvex.getViolations().stream()
                 .map(v -> new ApiErrorDetail("violation", String.format("%s %s", i18n(v.getPropertyPath().toString()), v.getMessage())))
                 .forEach(e -> details.add(e));
         }

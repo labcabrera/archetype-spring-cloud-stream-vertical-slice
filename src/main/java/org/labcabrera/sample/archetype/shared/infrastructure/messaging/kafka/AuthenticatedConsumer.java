@@ -2,7 +2,6 @@ package org.labcabrera.sample.archetype.shared.infrastructure.messaging.kafka;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.messaging.Message;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,7 +25,7 @@ public abstract class AuthenticatedConsumer {
                     .map(String::trim)
                     .filter(s -> !s.isEmpty())
                     .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
+                    .toList();
             Authentication auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(auth);
         }

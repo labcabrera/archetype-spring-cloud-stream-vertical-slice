@@ -5,10 +5,10 @@ import lombok.Getter;
 public class DomainException extends RuntimeException {
 
     @Getter
-    private int status;
+    private final transient int status;
 
     @Getter
-    private Object[] args;
+    private final transient Object[] args;
 
     public DomainException(String code, int status, Object... args) {
         super(code);
